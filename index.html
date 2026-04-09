@@ -1207,13 +1207,12 @@
   <p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#c9a84c;margin-bottom:12px;text-align:center;">Send an Enquiry</p>
   <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;font-weight:700;color:#f9f4ec;margin-bottom:32px;text-align:center;">Book Your Spot</h3>
 
-  <form name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field"
-    action="/success"
+  <form name="booking" method="POST" netlify data-netlify="true" netlify-honeypot="bot-field"
+    action="/"
     style="display:flex;flex-direction:column;gap:16px;"
     onsubmit="handleFormSubmit(event)">
 
     <input type="hidden" name="form-name" value="booking"/>
-    <input type="hidden" name="_to" value="Barefootafrikanspiritualtours@proton.me"/>
     <p style="display:none"><input name="bot-field"/></p>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
