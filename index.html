@@ -672,6 +672,30 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 @media print {
   body { display: none !important; }
 }
+
+  /* ── LANGUAGE PICKER ── */
+  .lang-picker {
+    display: flex; gap: 4px; align-items: center;
+    margin-left: 8px;
+  }
+  .lang-btn {
+    background: none; border: 1px solid rgba(201,168,76,0.25);
+    color: rgba(249,244,236,0.5); font-size: 9px; font-weight: 700;
+    letter-spacing: 1px; padding: 5px 8px; cursor: pointer;
+    transition: all .2s; font-family: 'Montserrat', sans-serif;
+    min-width: 32px;
+  }
+  .lang-btn:hover { border-color: var(--gold); color: var(--cream); }
+  .lang-btn.active { background: var(--gold); color: var(--dark); border-color: var(--gold); }
+  .lang-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  @media (max-width: 768px) { .lang-picker { display: none; } }
+  /* Mobile lang picker inside drawer */
+  .drawer-lang-picker {
+    display: flex; gap: 6px; flex-wrap: wrap; margin-top: 24px; padding-top: 20px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+  .drawer-lang-picker .lang-btn { flex: 1; text-align: center; padding: 10px 4px; }
+
 </style>
 </head>
 <body>
@@ -689,8 +713,9 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
   <a class="nav-brand" href="#hero" aria-label="BAST Home">B<span>.</span>A<span>.</span>S<span>.</span>T<span>.</span></a>
   <div class="nav-actions">
     <button class="nav-link" id="navAboutBtn" aria-haspopup="dialog">About</button>
-    <a class="nav-link" href="#contact">Contact</a>
-    <a class="nav-book" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer">&#128172; Book</a>
+    <a class="nav-link" id="navContactLink" href="#contact">Contact</a>
+    <div class="lang-picker" id="langPicker" role="group" aria-label="Select language"></div>
+    <a class="nav-book" id="navBookLink" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer">&#128172; Book</a>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="navDrawer">
     <span></span><span></span><span></span>
@@ -701,7 +726,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 <div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Navigation menu">
   <button class="nav-drawer-link" id="drawerAboutBtn">About BAST</button>
   <a class="nav-drawer-link" href="#contact" id="drawerContactLink">Contact</a>
-  <a class="btn-primary" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer" style="margin-top:24px;text-align:center;">&#128172; Reserve My Spot</a>
+  <a class="btn-primary" id="drawerBookLink" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer" style="margin-top:24px;text-align:center;">&#128172; Reserve My Spot</a>
+<div class="drawer-lang-picker" id="drawerLangPicker"></div>
 </div>
 
 <!-- ═══════════════════════════════
@@ -710,19 +736,19 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 <div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-label="About Barefoot Afrikan Spiritual Tours">
   <div class="modal-box">
     <button class="modal-close" id="modalClose" aria-label="Close modal">&#10005;</button>
-    <span class="eyebrow">Who We Are</span>
+    <span class="eyebrow" id="modalWho">Who We Are</span>
     <h2 class="display-title light" style="margin-bottom:0">Barefoot Afrikan<br>Spiritual Tours</h2>
     <div class="modal-divider"></div>
     <div class="modal-section">
-      <div class="modal-section-title">Mission</div>
-      <p class="modal-section-text">To offer unique, immersive spiritual experiences that create a journey through the cultures of Afrika for all.</p>
+      <div class="modal-section-title" id="modalMissionLbl">Mission</div>
+      <p class="modal-section-text" id="modalMission">To offer unique, immersive spiritual experiences that create a journey through the cultures of Afrika for all.</p>
     </div>
     <div class="modal-section">
-      <div class="modal-section-title">Vision</div>
-      <p class="modal-section-text">Connecting people back to their Afrikan culture and identity, creating economic stability and justice for Afrikans, and building a community where everyone can rise.</p>
+      <div class="modal-section-title" id="modalVisionLbl">Vision</div>
+      <p class="modal-section-text" id="modalVision">Connecting people back to their Afrikan culture and identity, creating economic stability and justice for Afrikans, and building a community where everyone can rise.</p>
     </div>
     <div class="modal-section">
-      <div class="modal-section-title">Our Values</div>
+      <div class="modal-section-title" id="modalValuesLbl">Our Values</div>
       <div class="values-grid">
         <div class="value-card"><div class="value-name">Authentic Connection</div><div class="value-desc">Genuine and honest in your intentions while working with and for BAST.</div></div>
         <div class="value-card"><div class="value-name">Uniqueness</div><div class="value-desc">Creating space for all to be who they are and bring their perspectives together.</div></div>
@@ -732,7 +758,7 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
       </div>
     </div>
     <div class="modal-section">
-      <div class="modal-section-title">Our Goals</div>
+      <div class="modal-section-title" id="modalGoalsLbl">Our Goals</div>
       <ul class="goals-list">
         <li>Spread the power of Afrikan Spirituality to all.</li>
         <li>Repatriate those who want to live in Afrika with ease.</li>
@@ -740,7 +766,7 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
       </ul>
     </div>
     <div style="margin-top:36px;text-align:center">
-      <a class="btn-primary" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer">&#128172; Reserve My Spot</a>
+      <a class="btn-primary" id="modalBtn" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer">&#128172; Reserve My Spot</a>
     </div>
   </div>
 </div>
@@ -749,22 +775,22 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
   HERO
 ═══════════════════════════════ -->
 <section class="hero" id="hero">
-  <div class="hero-badge">Barefoot Afrikan Spiritual Tours</div>
-  <h1 class="hero-title">RETURN TO<br><em>THE ROOTS</em></h1>
-  <p class="hero-sub">7 Days &bull; 5 Regions &bull; One Transformational Journey</p>
+  <div class="hero-badge" id="heroBadge">Barefoot Afrikan Spiritual Tours</div>
+  <h1 class="hero-title" id="heroTitle">RETURN TO<br><em>THE ROOTS</em></h1>
+  <p class="hero-sub" id="heroSub">7 Days &bull; 5 Regions &bull; One Transformational Journey</p>
   <div class="hero-divider"></div>
   <div class="hero-stats">
     <div>
-      <span class="hero-stat-label">Dates</span>
-      <span class="hero-stat-value">Nov 28 &ndash; Dec 5, 2026</span>
+      <span class="hero-stat-label" id="statDatesLbl">Dates</span>
+      <span class="hero-stat-value" id="statDatesVal">Nov 28 &ndash; Dec 5, 2026</span>
     </div>
     <div>
-      <span class="hero-stat-label">Price</span>
-      <span class="hero-stat-value">$1,697 / person</span>
+      <span class="hero-stat-label" id="statPriceLbl">Price</span>
+      <span class="hero-stat-value" id="statPriceVal">$1,697 / person</span>
     </div>
     <div>
-      <span class="hero-stat-label">Destination</span>
-      <span class="hero-stat-value">Ghana, West Africa</span>
+      <span class="hero-stat-label" id="statDestLbl">Destination</span>
+      <span class="hero-stat-value" id="statDestVal">Ghana, West Africa</span>
     </div>
   </div>
 
@@ -781,21 +807,21 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
       </div>
       <div class="form-grid-2">
         <div class="form-group">
-          <label class="form-label" for="f-name">Full Name *</label>
+          <label class="form-label" id="formNameLbl" for="f-name">Full Name *</label>
           <input class="form-input" type="text" id="f-name" name="name" required placeholder="Your full name" autocomplete="name" maxlength="120">
         </div>
         <div class="form-group">
-          <label class="form-label" for="f-email">Email *</label>
+          <label class="form-label" id="formEmailLbl" for="f-email">Email *</label>
           <input class="form-input" type="email" id="f-email" name="email" required placeholder="your@email.com" autocomplete="email" maxlength="254">
         </div>
       </div>
       <div class="form-grid-2">
         <div class="form-group">
-          <label class="form-label" for="f-phone">Phone / WhatsApp</label>
+          <label class="form-label" id="formPhoneLbl" for="f-phone">Phone / WhatsApp</label>
           <input class="form-input" type="tel" id="f-phone" name="phone" placeholder="+1 000 000 0000" autocomplete="tel" maxlength="30">
         </div>
         <div class="form-group">
-          <label class="form-label" for="f-guests">Number of Guests</label>
+          <label class="form-label" id="formGuestsLbl" for="f-guests">Number of Guests</label>
           <select class="form-select" id="f-guests" name="guests">
             <option value="1">1 Guest</option>
             <option value="2">2 Guests</option>
@@ -806,7 +832,7 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="f-payment">Payment Option</label>
+        <label class="form-label" id="formPaymentLbl" for="f-payment">Payment Option</label>
         <select class="form-select" id="f-payment" name="payment_option">
           <option value="full">Full Payment - $1,697</option>
           <option value="plan">Payment Plan - Starting May 2026</option>
@@ -814,20 +840,20 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label" for="f-message">Message</label>
+        <label class="form-label" id="formMsgLbl" for="f-message">Message</label>
         <textarea class="form-textarea" id="f-message" name="message" rows="3" placeholder="Questions, dietary needs, medical conditions..." maxlength="1000"></textarea>
       </div>
       <div id="formError" style="display:none;background:rgba(139,58,26,0.12);border:1px solid rgba(139,58,26,0.4);padding:12px 16px;margin-bottom:12px;font-size:12px;color:#e07b40;" role="alert"></div>
-      <button type="submit" class="btn-primary" id="submitBtn" style="width:100%;border:none;padding:18px;">
+      <button type="submit" class="btn-primary" id="formSubmitBtn" style="width:100%;border:none;padding:18px;">
         &#9993;&#65039; RESERVE YOUR SPOT
       </button>
       <div class="form-success" id="formSuccess" role="status">
-        <div class="form-success-title">Thank you! &#10022;</div>
-        <p class="form-success-text">We will be in touch via WhatsApp or email within 24 hours.</p>
+        <div class="form-success-title" id="formSuccessTitle">Thank you! &#10022;</div>
+        <p class="form-success-text" id="formSuccessText">We will be in touch via WhatsApp or email within 24 hours.</p>
       </div>
     </form>
   </div>
-  <p class="hero-spots">Only 9 Spots Available</p>
+  <p class="hero-spots" id="heroSpots">Only 9 Spots Available</p>
 </section>
 
 <!-- ═══════════════════════════════
@@ -836,16 +862,16 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 <section class="about-section" id="about">
   <div class="about-grid">
     <div>
-      <span class="eyebrow">About the Journey</span>
-      <h2 class="display-title">A Sacred Return Home</h2>
-      <p class="body-copy">This is more than a tour - it is a pilgrimage. Traverse five distinct regions of Ghana, from the vibrant coast of Accra to the royal heart of the Ashanti Kingdom, immersed in culture, nature, and ancestral healing.</p>
-      <p class="body-copy">Guided by experienced local experts, each day unfolds as a ceremony - honoring the land, the people, and the spirit of the African continent. Whether you are reconnecting with heritage or embarking on a first-time ancestral journey, this experience is designed to transform.</p>
+      <span class="eyebrow" id="aboutEye">About the Journey</span>
+      <h2 class="display-title" id="aboutTitle">A Sacred Return Home</h2>
+      <p class="body-copy" id="aboutP1">This is more than a tour - it is a pilgrimage. Traverse five distinct regions of Ghana, from the vibrant coast of Accra to the royal heart of the Ashanti Kingdom, immersed in culture, nature, and ancestral healing.</p>
+      <p class="body-copy" id="aboutP2">Guided by experienced local experts, each day unfolds as a ceremony - honoring the land, the people, and the spirit of the African continent. Whether you are reconnecting with heritage or embarking on a first-time ancestral journey, this experience is designed to transform.</p>
     </div>
     <div class="stats-grid">
-      <div class="stat-box"><div class="stat-num">7</div><div class="stat-lbl">Days of Immersion</div></div>
-      <div class="stat-box"><div class="stat-num">5</div><div class="stat-lbl">Regions of Ghana</div></div>
-      <div class="stat-box"><div class="stat-num">9</div><div class="stat-lbl">Spots Remaining</div></div>
-      <div class="stat-box"><div class="stat-num">$1,697</div><div class="stat-lbl">Per Person All-Inclusive</div></div>
+      <div class="stat-box"><div class="stat-num">7</div><div class="stat-lbl" id="statDays">Days of Immersion</div></div>
+      <div class="stat-box"><div class="stat-num">5</div><div class="stat-lbl" id="statRegions">Regions of Ghana</div></div>
+      <div class="stat-box"><div class="stat-num">9</div><div class="stat-lbl" id="statSpots2">Spots Remaining</div></div>
+      <div class="stat-box"><div class="stat-num">$1,697</div><div class="stat-lbl" id="statPrice2">Per Person All-Inclusive</div></div>
     </div>
   </div>
 </section>
@@ -856,8 +882,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 <section class="regions-section" id="regions">
   <div class="regions-inner">
     <div class="regions-header">
-      <span class="eyebrow">Where We Go</span>
-      <h2 class="display-title" style="text-align:center">Five Sacred Regions</h2>
+      <span class="eyebrow" id="regionsEye">Where We Go</span>
+      <h2 class="display-title" id="regionsTitle" style="text-align:center">Five Sacred Regions</h2>
     </div>
     <div class="regions-grid">
       <div class="region-card">
@@ -914,8 +940,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 ═══════════════════════════════ -->
 <section class="gallery-section" id="gallery">
   <div class="gallery-inner">
-    <span class="eyebrow" style="text-align:center;display:block">From Past Journeys</span>
-    <h2 class="display-title light" style="text-align:center">Experience the Magic</h2>
+    <span class="eyebrow" id="galleryEye" style="text-align:center;display:block">From Past Journeys</span>
+    <h2 class="display-title light" id="galleryTitle" style="text-align:center">Experience the Magic</h2>
   </div>
   <div class="slideshow-wrap" id="slideshowWrap">
     <div id="slideshowTrack"></div>
@@ -935,17 +961,17 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 ═══════════════════════════════ -->
 <section class="itinerary-section" id="itinerary">
   <div class="itinerary-inner">
-    <span class="eyebrow">Day by Day</span>
-    <h2 class="display-title">Your 8-Day Journey</h2>
-    <p class="itinerary-note">Tap any day to expand details.</p>
+    <span class="eyebrow" id="itinEye">Day by Day</span>
+    <h2 class="display-title" id="itinTitle">Your 8-Day Journey</h2>
+    <p class="itinerary-note" id="itinNote">Tap any day to expand details.</p>
 
     <div id="daysVisible">
       <div class="day-row" data-day="1">
         <div class="day-num-col"><div class="day-n">1</div><div class="day-lbl">Day</div></div>
         <div class="day-body">
           <div class="day-date">Saturday, 28 November 2026</div>
-          <div class="day-title">Arrival &amp; Welcome</div>
-          <div class="day-desc">Airport pickup upon arrival. Settle into your accommodation, meet your fellow travelers, and share a welcome dinner. The journey begins with an orientation to the sacred land of Ghana.</div>
+          <div class="day-title" id="d1Title">Arrival &amp; Welcome</div>
+          <div class="day-desc" id="d1Desc">Airport pickup upon arrival. Settle into your accommodation, meet your fellow travelers, and share a welcome dinner. The journey begins with an orientation to the sacred land of Ghana.</div>
           <div class="day-tags"><span class="tag tag-featured">&#9992; Arrival</span><span class="tag tag-regular">Welcome Dinner</span><span class="tag tag-regular">Orientation</span></div>
         </div>
       </div>
@@ -953,8 +979,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         <div class="day-num-col"><div class="day-n">2</div><div class="day-lbl">Day</div></div>
         <div class="day-body">
           <div class="day-date">Sunday, 29 November 2026</div>
-          <div class="day-title">Go-Kart, Beach &amp; Chillax</div>
-          <div class="day-desc">Go-Karts and a House Party to kick off the experience. Relax on the beautiful Bojo Beach and enjoy Ghana's vibrant coastal energy.</div>
+          <div class="day-title" id="d2Title">Go-Kart, Beach &amp; Chillax</div>
+          <div class="day-desc" id="d2Desc">Go-Karts and a House Party to kick off the experience. Relax on the beautiful Bojo Beach and enjoy Ghana's vibrant coastal energy.</div>
           <div class="day-tags"><span class="tag tag-featured">&#127958; Bojo Beach</span><span class="tag tag-regular">Go-Karts</span><span class="tag tag-regular">House Party</span></div>
         </div>
       </div>
@@ -962,8 +988,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         <div class="day-num-col"><div class="day-n">3</div><div class="day-lbl">Day</div></div>
         <div class="day-body">
           <div class="day-date">Monday, 30 November 2026</div>
-          <div class="day-title">History &amp; Heritage - Accra</div>
-          <div class="day-desc">Explore the Accra Art Center, Je Gber Gardens, and historical sites across the capital. A deep dive into the art, music, and ancestral roots of Greater Accra.</div>
+          <div class="day-title" id="d3Title">History &amp; Heritage - Accra</div>
+          <div class="day-desc" id="d3Desc">Explore the Accra Art Center, Je Gber Gardens, and historical sites across the capital. A deep dive into the art, music, and ancestral roots of Greater Accra.</div>
           <div class="day-tags"><span class="tag tag-featured">&#127963; Accra</span><span class="tag tag-regular">Art Center</span><span class="tag tag-regular">Je Gber Gardens</span></div>
         </div>
       </div>
@@ -979,8 +1005,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         <div class="day-num-col"><div class="day-n">4</div><div class="day-lbl">Day</div></div>
         <div class="day-body">
           <div class="day-date">Tuesday, 1 December 2026</div>
-          <div class="day-title">Volta River &amp; Resort Living</div>
-          <div class="day-desc">Travel to the Volta Region and check into Agbenoir Resorts on the river. Enjoy stunning views, cross the iconic Adome Bridge, and unwind in paradise.</div>
+          <div class="day-title" id="d4Title">Volta River &amp; Resort Living</div>
+          <div class="day-desc" id="d4Desc">Travel to the Volta Region and check into Agbenoir Resorts on the river. Enjoy stunning views, cross the iconic Adome Bridge, and unwind in paradise.</div>
           <div class="day-tags"><span class="tag tag-featured">&#127754; Volta River</span><span class="tag tag-regular">Agbenoir Resorts</span><span class="tag tag-regular">Adome Bridge</span></div>
         </div>
       </div>
@@ -988,8 +1014,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         <div class="day-num-col"><div class="day-n">5</div><div class="day-lbl">Day</div></div>
         <div class="day-body">
           <div class="day-date">Wednesday, 2 December 2026</div>
-          <div class="day-title">Adventure in the Volta</div>
-          <div class="day-desc">Kayak on the Volta River, cycle through local villages, explore breathtaking waterfalls, and walk the canopy bridge high above the forest floor.</div>
+          <div class="day-title" id="d5Title">Adventure in the Volta</div>
+          <div class="day-desc" id="d5Desc">Kayak on the Volta River, cycle through local villages, explore breathtaking waterfalls, and walk the canopy bridge high above the forest floor.</div>
           <div class="day-tags"><span class="tag tag-featured">&#128675; Kayaking</span><span class="tag tag-regular">Waterfalls</span><span class="tag tag-regular">Canopy Walk</span><span class="tag tag-regular">Cycling</span></div>
         </div>
       </div>
@@ -997,8 +1023,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         <div class="day-num-col"><div class="day-n">6</div><div class="day-lbl">Day</div></div>
         <div class="day-body">
           <div class="day-date">Thursday, 3 December 2026</div>
-          <div class="day-title">Wild North - Mole National Park</div>
-          <div class="day-desc">Travel north to Ghana's premier wildlife reserve. Safari experience with elephants, antelopes, and diverse wildlife roaming the open savanna landscape.</div>
+          <div class="day-title" id="d6Title">Wild North - Mole National Park</div>
+          <div class="day-desc" id="d6Desc">Travel north to Ghana's premier wildlife reserve. Safari experience with elephants, antelopes, and diverse wildlife roaming the open savanna landscape.</div>
           <div class="day-tags"><span class="tag tag-featured">&#128024; Safari</span><span class="tag tag-regular">Mole National Park</span><span class="tag tag-regular">Wildlife</span></div>
         </div>
       </div>
@@ -1006,8 +1032,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         <div class="day-num-col"><div class="day-n">7</div><div class="day-lbl">Day</div></div>
         <div class="day-body">
           <div class="day-date">Friday, 4 December 2026</div>
-          <div class="day-title">Sacred Nature - Bono Region</div>
-          <div class="day-desc">Visit the Fiema Monkey Sanctuary and the sacred River Tano where crocodiles are revered. Participate in a Spiritual Cleansing &amp; Herbal Healing Workshop by the water.</div>
+          <div class="day-title" id="d7Title">Sacred Nature - Bono Region</div>
+          <div class="day-desc" id="d7Desc">Visit the Fiema Monkey Sanctuary and the sacred River Tano where crocodiles are revered. Participate in a Spiritual Cleansing &amp; Herbal Healing Workshop by the water.</div>
           <div class="day-tags"><span class="tag tag-featured">&#127807; Spiritual Cleansing</span><span class="tag tag-regular">Fiema Sanctuary</span><span class="tag tag-regular">Sacred River Tano</span></div>
         </div>
       </div>
@@ -1015,8 +1041,8 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         <div class="day-num-col"><div class="day-n">8</div><div class="day-lbl">Day</div></div>
         <div class="day-body">
           <div class="day-date">Saturday, 5 December 2026</div>
-          <div class="day-title">Royal Ashanti - The Grand Finale</div>
-          <div class="day-desc">A royal send-off through the Ashanti Kingdom. Tour Manhyia Palace, witness the legendary Okomfo Anokye Sword, explore Kumasi's cultural centre, and close the journey with ceremony and gratitude.</div>
+          <div class="day-title" id="d8Title">Royal Ashanti - The Grand Finale</div>
+          <div class="day-desc" id="d8Desc">A royal send-off through the Ashanti Kingdom. Tour Manhyia Palace, witness the legendary Okomfo Anokye Sword, explore Kumasi's cultural centre, and close the journey with ceremony and gratitude.</div>
           <div class="day-tags"><span class="tag tag-featured">&#128081; Royal Tour</span><span class="tag tag-regular">Manhyia Palace</span><span class="tag tag-regular">Okomfo Anokye</span><span class="tag tag-regular">Kumasi</span></div>
         </div>
       </div>
@@ -1029,22 +1055,22 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 ═══════════════════════════════ -->
 <section class="includes-section" id="includes">
   <div class="includes-inner">
-    <span class="eyebrow">What Is Included</span>
-    <h2 class="display-title light" style="margin-bottom:10px">Everything You Need</h2>
-    <p class="body-copy light">Your investment covers every essential element of the journey.</p>
+    <span class="eyebrow" id="incEye">What Is Included</span>
+    <h2 class="display-title light" id="incTitle" style="margin-bottom:10px">Everything You Need</h2>
+    <p class="body-copy light" id="incSub">Your investment covers every essential element of the journey.</p>
     <div class="includes-grid">
-      <div class="include-item"><span class="include-icon">&#9992;&#65039;</span><span class="include-text">Airport Pickup upon arrival</span></div>
-      <div class="include-item"><span class="include-icon">&#127869;&#65039;</span><span class="include-text">Two meals daily - breakfast &amp; dinner at curated local venues</span></div>
-      <div class="include-item"><span class="include-icon">&#127968;</span><span class="include-text">Accommodation every night throughout the 7-day journey</span></div>
-      <div class="include-item"><span class="include-icon">&#127807;</span><span class="include-text">Spiritual Cleansing &amp; Herbal Healing Workshop</span></div>
-      <div class="include-item"><span class="include-icon">&#128024;</span><span class="include-text">Safari experience at Mole National Park</span></div>
-      <div class="include-item"><span class="include-icon">&#128018;</span><span class="include-text">Fiema Monkey Sanctuary &amp; Sacred River Tano visit</span></div>
-      <div class="include-item"><span class="include-icon">&#128675;</span><span class="include-text">Boat Cruise &amp; Kayak experience on the Volta</span></div>
-      <div class="include-item"><span class="include-icon">&#127754;</span><span class="include-text">Waterfalls, Beach &amp; Canopy Walk adventures</span></div>
-      <div class="include-item"><span class="include-icon">&#128081;</span><span class="include-text">Full Ashanti Kingdom Tour - Manhyia Palace &amp; Okomfo Anokye</span></div>
-      <div class="include-item"><span class="include-icon">&#128652;</span><span class="include-text">All ground transport across all 5 regions</span></div>
-      <div class="include-item"><span class="include-icon">&#127954;&#65039;</span><span class="include-text">Go-Kart tickets included on Day 2</span></div>
-      <div class="include-item"><span class="include-icon">&#129517;</span><span class="include-text">Expert guides and cultural interpretation throughout</span></div>
+      <div class="include-item"><span class="include-icon">&#9992;&#65039;</span><span class="include-text" id="inc1">Airport Pickup upon arrival</span></div>
+      <div class="include-item"><span class="include-icon">&#127869;&#65039;</span><span class="include-text" id="inc2">Two meals daily - breakfast &amp; dinner at curated local venues</span></div>
+      <div class="include-item"><span class="include-icon">&#127968;</span><span class="include-text" id="inc3">Accommodation every night throughout the 7-day journey</span></div>
+      <div class="include-item"><span class="include-icon">&#127807;</span><span class="include-text" id="inc4">Spiritual Cleansing &amp; Herbal Healing Workshop</span></div>
+      <div class="include-item"><span class="include-icon">&#128024;</span><span class="include-text" id="inc5">Safari experience at Mole National Park</span></div>
+      <div class="include-item"><span class="include-icon">&#128018;</span><span class="include-text" id="inc6">Fiema Monkey Sanctuary &amp; Sacred River Tano visit</span></div>
+      <div class="include-item"><span class="include-icon">&#128675;</span><span class="include-text" id="inc7">Boat Cruise &amp; Kayak experience on the Volta</span></div>
+      <div class="include-item"><span class="include-icon">&#127754;</span><span class="include-text" id="inc8">Waterfalls, Beach &amp; Canopy Walk adventures</span></div>
+      <div class="include-item"><span class="include-icon">&#128081;</span><span class="include-text" id="inc9">Full Ashanti Kingdom Tour - Manhyia Palace &amp; Okomfo Anokye</span></div>
+      <div class="include-item"><span class="include-icon">&#128652;</span><span class="include-text" id="inc10">All ground transport across all 5 regions</span></div>
+      <div class="include-item"><span class="include-icon">&#127954;&#65039;</span><span class="include-text" id="inc11">Go-Kart tickets included on Day 2</span></div>
+      <div class="include-item"><span class="include-icon">&#129517;</span><span class="include-text" id="inc12">Expert guides and cultural interpretation throughout</span></div>
     </div>
   </div>
 </section>
@@ -1054,13 +1080,13 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 ═══════════════════════════════ -->
 <section class="not-included-section">
   <div class="not-included-inner">
-    <span class="eyebrow" style="color:var(--accent)">Please Note</span>
-    <h2 class="display-title">What Is Not Included</h2>
+    <span class="eyebrow" id="notIncEye" style="color:var(--accent)">Please Note</span>
+    <h2 class="display-title" id="notIncTitle">What Is Not Included</h2>
     <div class="not-included-grid">
-      <div class="not-card"><span class="not-card-icon">&#9992;&#65039;</span><div><div class="not-card-title">International Flights</div><p class="not-card-text">Flights to and from Ghana are not included in the package price.</p></div></div>
-      <div class="not-card"><span class="not-card-icon">&#128706;</span><div><div class="not-card-title">Ghana Visa</div><p class="not-card-text">Travelers are responsible for obtaining their own Ghana entry visa.</p></div></div>
-      <div class="not-card"><span class="not-card-icon">&#128737;&#65039;</span><div><div class="not-card-title">Travel Insurance <span style="color:var(--accent);font-size:10px;font-family:Montserrat,sans-serif;letter-spacing:1px">MANDATORY</span></div><p class="not-card-text">Travel insurance is required for all participants. Please arrange before departure.</p></div></div>
-      <div class="not-card"><span class="not-card-icon">&#8987;&#65039;</span><div><div class="not-card-title">Delays &amp; Extensions</div><p class="not-card-text">Any additional costs arising from delays or trip extensions are the traveler's responsibility.</p></div></div>
+      <div class="not-card"><span class="not-card-icon">&#9992;&#65039;</span><div><div class="not-card-title" id="ni1Title">International Flights</div><p class="not-card-text" id="ni1Text">Flights to and from Ghana are not included in the package price.</p></div></div>
+      <div class="not-card"><span class="not-card-icon">&#128706;</span><div><div class="not-card-title" id="ni2Title">Ghana Visa</div><p class="not-card-text" id="ni2Text">Travelers are responsible for obtaining their own Ghana entry visa.</p></div></div>
+      <div class="not-card"><span class="not-card-icon">&#128737;&#65039;</span><div><div class="not-card-title" id="ni3Title">Travel Insurance <span id="mandatoryBadge" style="color:var(--accent);font-size:10px;font-family:Montserrat,sans-serif;letter-spacing:1px">MANDATORY</span></div><p class="not-card-text" id="ni3Text">Travel insurance is required for all participants. Please arrange before departure.</p></div></div>
+      <div class="not-card"><span class="not-card-icon">&#8987;&#65039;</span><div><div class="not-card-title" id="ni4Title">Delays &amp; Extensions</div><p class="not-card-text" id="ni4Text">Any additional costs arising from delays or trip extensions are the traveler's responsibility.</p></div></div>
     </div>
   </div>
 </section>
@@ -1070,23 +1096,23 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 ═══════════════════════════════ -->
 <section class="payment-section" id="payment">
   <div class="payment-inner">
-    <span class="eyebrow">Flexible Payments</span>
-    <h2 class="display-title light">Sacred Journey Payment Plan</h2>
-    <p class="body-copy light">At Barefoot Afrikan Spiritual Tours, we believe your journey should feel aligned, intentional, and accessible. We offer a flexible payment plan for your upcoming sacred experience.</p>
+    <span class="eyebrow" id="payEye">Flexible Payments</span>
+    <h2 class="display-title light" id="payTitle">Sacred Journey Payment Plan</h2>
+    <p class="body-copy light" id="payP1">At Barefoot Afrikan Spiritual Tours, we believe your journey should feel aligned, intentional, and accessible. We offer a flexible payment plan for your upcoming sacred experience.</p>
     <div class="payment-stats">
-      <div class="payment-stat"><div class="payment-stat-lbl">Tour Date</div><div class="payment-stat-val">November 28</div></div>
-      <div class="payment-stat"><div class="payment-stat-lbl">Total Investment</div><div class="payment-stat-val">$1,697</div></div>
-      <div class="payment-stat"><div class="payment-stat-lbl">Plan Begins</div><div class="payment-stat-val">May 2026</div></div>
-      <div class="payment-stat"><div class="payment-stat-lbl">Final Balance Due</div><div class="payment-stat-val" style="color:var(--gold)">October 31</div></div>
+      <div class="payment-stat"><div class="payment-stat-lbl" id="payStat1Lbl">Tour Date</div><div class="payment-stat-val" id="payStat1Val">November 28</div></div>
+      <div class="payment-stat"><div class="payment-stat-lbl" id="payStat2Lbl">Total Investment</div><div class="payment-stat-val" id="payStat2Val">$1,697</div></div>
+      <div class="payment-stat"><div class="payment-stat-lbl" id="payStat3Lbl">Plan Begins</div><div class="payment-stat-val" id="payStat3Val">May 2026</div></div>
+      <div class="payment-stat"><div class="payment-stat-lbl" id="payStat4Lbl">Final Balance Due</div><div class="payment-stat-val" style="color:var(--gold)">October 31</div></div>
     </div>
     <div class="payment-quote">
-      <p class="body-copy light">You may choose to make monthly or bi-weekly contributions, allowing you to prepare for your journey with ease and balance. All payments must be completed by the final due date to fully secure your place on this sacred tour.</p>
-      <p class="body-copy light">We encourage consistent contributions and welcome early payments as part of your preparation and commitment to this experience.</p>
-      <p class="body-copy light">For guidance or support in arranging your payment flow, please reach out - we are here to walk this path with you.</p>
+      <p class="body-copy light" id="payQ1">You may choose to make monthly or bi-weekly contributions, allowing you to prepare for your journey with ease and balance. All payments must be completed by the final due date to fully secure your place on this sacred tour.</p>
+      <p class="body-copy light" id="payQ2">We encourage consistent contributions and welcome early payments as part of your preparation and commitment to this experience.</p>
+      <p class="body-copy light" id="payQ3">For guidance or support in arranging your payment flow, please reach out - we are here to walk this path with you.</p>
     </div>
     <div class="payment-cta-box">
-      <p class="payment-verse">Walk gently. Prepare intentionally.<br>Your journey begins long before you arrive.</p>
-      <a class="btn-primary" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer">&#128172; Arrange Your Payment Plan</a>
+      <p class="payment-verse" id="payVerse">Walk gently. Prepare intentionally.<br>Your journey begins long before you arrive.</p>
+      <a class="btn-primary" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer" id="payCtaBtn">&#128172; Arrange Your Payment Plan</a>
     </div>
   </div>
 </section>
@@ -1096,15 +1122,15 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 ═══════════════════════════════ -->
 <section class="price-section" id="price">
   <div class="price-inner">
-    <span class="eyebrow">Investment</span>
-    <h2 class="display-title">Secure Your Place</h2>
+    <span class="eyebrow" id="priceEye">Investment</span>
+    <h2 class="display-title" id="priceTitle">Secure Your Place</h2>
     <div class="price-box">
-      <div class="price-tag">Price Per Person</div>
+      <div class="price-tag" id="priceTag">Price Per Person</div>
       <div class="price-amount">$1,697</div>
-      <div class="price-per">per person &middot; all-inclusive</div>
-      <div class="price-alert">Only 9 Spots Available</div>
-      <p class="price-fine">Secure your spot with a deposit via WhatsApp</p>
-      <a class="btn-primary" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer">&#128172; Book Now via WhatsApp</a>
+      <div class="price-per" id="pricePer">per person &middot; all-inclusive</div>
+      <div class="price-alert" id="priceAlert">Only 9 Spots Available</div>
+      <p class="price-fine" id="priceFine">Secure your spot with a deposit via WhatsApp</p>
+      <a class="btn-primary" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer" id="priceBtn">&#128172; Book Now via WhatsApp</a>
     </div>
   </div>
 </section>
@@ -1114,13 +1140,13 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 ═══════════════════════════════ -->
 <section class="terms-section" id="terms">
   <div class="terms-inner">
-    <span class="eyebrow">Before You Book</span>
-    <h2 class="display-title">Terms &amp; Conditions</h2>
+    <span class="eyebrow" id="termsEye">Before You Book</span>
+    <h2 class="display-title" id="termsTitle">Terms &amp; Conditions</h2>
     <div class="terms-grid">
-      <div class="term-card"><h4 class="term-title">Food &amp; Beverage</h4><p class="term-text">Two meals provided daily for all registered participants. Lunch and additional snacks are at your own expense. Dietary restrictions should be communicated in advance.</p></div>
-      <div class="term-card"><h4 class="term-title">Medical Conditions</h4><p class="term-text">Please declare any medical conditions, allergies, or dietary requirements prior to departure. This information will be kept confidential and used only to ensure your safety.</p></div>
-      <div class="term-card"><h4 class="term-title">Personal Security</h4><p class="term-text">Security arrangements will be in place throughout the tour. Participants are responsible for their personal belongings. Travel insurance is strongly recommended.</p></div>
-      <div class="term-card"><h4 class="term-title">Cancellation Policy</h4><p class="term-text">All payments are non-refundable. However, your booking may be transferred to another individual if you are unable to attend. Please contact us as early as possible.</p></div>
+      <div class="term-card"><h4 class="term-title" id="t1Title">Food &amp; Beverage</h4><p class="term-text" id="t1Text">Two meals provided daily for all registered participants. Lunch and additional snacks are at your own expense. Dietary restrictions should be communicated in advance.</p></div>
+      <div class="term-card"><h4 class="term-title" id="t2Title">Medical Conditions</h4><p class="term-text" id="t2Text">Please declare any medical conditions, allergies, or dietary requirements prior to departure. This information will be kept confidential and used only to ensure your safety.</p></div>
+      <div class="term-card"><h4 class="term-title" id="t3Title">Personal Security</h4><p class="term-text" id="t3Text">Security arrangements will be in place throughout the tour. Participants are responsible for their personal belongings. Travel insurance is strongly recommended.</p></div>
+      <div class="term-card"><h4 class="term-title" id="t4Title">Cancellation Policy</h4><p class="term-text" id="t4Text">All payments are non-refundable. However, your booking may be transferred to another individual if you are unable to attend. Please contact us as early as possible.</p></div>
     </div>
   </div>
 </section>
@@ -1130,15 +1156,15 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
 ═══════════════════════════════ -->
 <section class="contact-section" id="contact">
   <div class="contact-inner">
-    <span class="eyebrow" style="display:block;text-align:center">Get in Touch</span>
-    <h2 class="display-title light" style="text-align:center;margin-bottom:44px">Connect With Us</h2>
+    <span class="eyebrow" id="contactEye" style="display:block;text-align:center">Get in Touch</span>
+    <h2 class="display-title light" id="contactTitle" style="text-align:center;margin-bottom:44px">Connect With Us</h2>
     <div class="contact-channels">
       <div>
-        <span class="contact-ch-lbl">WhatsApp</span>
+        <span class="contact-ch-lbl" id="contactWaLbl">WhatsApp</span>
         <span class="contact-ch-val">+233 24 733 3317</span>
       </div>
       <div>
-        <span class="contact-ch-lbl">Social Media</span>
+        <span class="contact-ch-lbl" id="contactSocialLbl">Social Media</span>
         <span class="contact-ch-val">@barefootafrikanspiritualtours</span>
       </div>
     </div>
@@ -1156,7 +1182,7 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
         WhatsApp
       </a>
     </div>
-    <a class="btn-primary" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer">&#128172; Reserve My Spot via WhatsApp</a>
+    <a class="btn-primary" href="https://wa.me/message/DKJM7PMYHJ46M1" target="_blank" rel="noopener noreferrer" id="contactReserveBtn">&#128172; Reserve My Spot via WhatsApp</a>
   </div>
 </section>
 
@@ -1164,7 +1190,7 @@ a, button, .day-row, .expand-btn, .dot, .slide-btn,
   FOOTER
 ═══════════════════════════════ -->
 <footer class="footer">
-  &copy; 2026 Barefoot Afrikan Spiritual Tours &bull; B.A.S.T. Ghana Tour &bull; All Rights Reserved
+  <span id="footerText">&copy; 2026 Barefoot Afrikan Spiritual Tours &bull; B.A.S.T. Ghana Tour &bull; All Rights Reserved</span>
 </footer>
 
 <!-- BACK TO TOP -->
@@ -1442,7 +1468,7 @@ function sanitize(str) {
 ═══════════════════════════════════════ */
 (function() {
   var form = document.getElementById('bookingForm');
-  var submitBtn = document.getElementById('submitBtn');
+  var submitBtn = document.getElementById('formSubmitBtn');
   var errorBox = document.getElementById('formError');
   var successBox = document.getElementById('formSuccess');
   var submitted = false;
@@ -1613,6 +1639,676 @@ function sanitize(str) {
   }
 
 })();
+</script>
+<script>
+
+/* ═══════════════════════════════════════
+   TRANSLATIONS (i18n)
+═══════════════════════════════════════ */
+(function() {
+
+var T = {
+  en: {
+    lang_label: "Language",
+    nav_about: "About", nav_contact: "Contact", nav_book: "&#128172; Book",
+    hero_badge: "Barefoot Afrikan Spiritual Tours",
+    hero_title: "RETURN TO<br><em>THE ROOTS</em>",
+    hero_sub: "7 Days &bull; 5 Regions &bull; One Transformational Journey",
+    stat_dates: "Dates", stat_price: "Price", stat_dest: "Destination",
+    stat_dates_val: "Nov 28 &ndash; Dec 5, 2026", stat_price_val: "$1,697 / person", stat_dest_val: "Ghana, West Africa",
+    form_name: "Full Name *", form_email: "Email *", form_phone: "Phone / WhatsApp",
+    form_guests: "Number of Guests", form_payment: "Payment Option",
+    form_message: "Message", form_msg_placeholder: "Questions, dietary needs, medical conditions...",
+    form_submit: "&#9993;&#65039; RESERVE YOUR SPOT",
+    form_success_title: "Thank you! &#10022;",
+    form_success_text: "We will be in touch via WhatsApp or email within 24 hours.",
+    spots: "Only 9 Spots Available",
+    pay_full: "Full Payment - $1,697", pay_plan: "Payment Plan - Starting May 2026", pay_deposit: "Deposit to Hold My Spot",
+    about_eye: "About the Journey", about_title: "A Sacred Return Home",
+    about_p1: "This is more than a tour - it is a pilgrimage. Traverse five distinct regions of Ghana, from the vibrant coast of Accra to the royal heart of the Ashanti Kingdom, immersed in culture, nature, and ancestral healing.",
+    about_p2: "Guided by experienced local experts, each day unfolds as a ceremony - honoring the land, the people, and the spirit of the African continent. Whether you are reconnecting with heritage or embarking on a first-time ancestral journey, this experience is designed to transform.",
+    stat_days: "Days of Immersion", stat_regions: "Regions of Ghana", stat_spots: "Spots Remaining", stat_price2: "Per Person All-Inclusive",
+    regions_eye: "Where We Go", regions_title: "Five Sacred Regions",
+    gallery_eye: "From Past Journeys", gallery_title: "Experience the Magic",
+    itin_eye: "Day by Day", itin_title: "Your 8-Day Journey", itin_note: "Tap any day to expand details.",
+    expand_show: "Show Days 4 - 8", expand_hide: "Show Less",
+    d1_title: "Arrival &amp; Welcome", d1_desc: "Airport pickup upon arrival. Settle into your accommodation, meet your fellow travelers, and share a welcome dinner. The journey begins with an orientation to the sacred land of Ghana.",
+    d2_title: "Go-Kart, Beach &amp; Chillax", d2_desc: "Go-Karts and a House Party to kick off the experience. Relax on the beautiful Bojo Beach and enjoy Ghana's vibrant coastal energy.",
+    d3_title: "History &amp; Heritage - Accra", d3_desc: "Explore the Accra Art Center, Je Gber Gardens, and historical sites across the capital. A deep dive into the art, music, and ancestral roots of Greater Accra.",
+    d4_title: "Volta River &amp; Resort Living", d4_desc: "Travel to the Volta Region and check into Agbenoir Resorts on the river. Enjoy stunning views, cross the iconic Adome Bridge, and unwind in paradise.",
+    d5_title: "Adventure in the Volta", d5_desc: "Kayak on the Volta River, cycle through local villages, explore breathtaking waterfalls, and walk the canopy bridge high above the forest floor.",
+    d6_title: "Wild North - Mole National Park", d6_desc: "Travel north to Ghana's premier wildlife reserve. Safari experience with elephants, antelopes, and diverse wildlife roaming the open savanna landscape.",
+    d7_title: "Sacred Nature - Bono Region", d7_desc: "Visit the Fiema Monkey Sanctuary and the sacred River Tano where crocodiles are revered. Participate in a Spiritual Cleansing &amp; Herbal Healing Workshop by the water.",
+    d8_title: "Royal Ashanti - The Grand Finale", d8_desc: "A royal send-off through the Ashanti Kingdom. Tour Manhyia Palace, witness the legendary Okomfo Anokye Sword, explore Kumasi's cultural centre, and close the journey with ceremony and gratitude.",
+    inc_eye: "What Is Included", inc_title: "Everything You Need", inc_sub: "Your investment covers every essential element of the journey.",
+    inc1: "Airport Pickup upon arrival", inc2: "Two meals daily - breakfast &amp; dinner at curated local venues",
+    inc3: "Accommodation every night throughout the 7-day journey", inc4: "Spiritual Cleansing &amp; Herbal Healing Workshop",
+    inc5: "Safari experience at Mole National Park", inc6: "Fiema Monkey Sanctuary &amp; Sacred River Tano visit",
+    inc7: "Boat Cruise &amp; Kayak experience on the Volta", inc8: "Waterfalls, Beach &amp; Canopy Walk adventures",
+    inc9: "Full Ashanti Kingdom Tour - Manhyia Palace &amp; Okomfo Anokye", inc10: "All ground transport across all 5 regions",
+    inc11: "Go-Kart tickets included on Day 2", inc12: "Expert guides and cultural interpretation throughout",
+    notinc_eye: "Please Note", notinc_title: "What Is Not Included",
+    ni1_title: "International Flights", ni1_text: "Flights to and from Ghana are not included in the package price.",
+    ni2_title: "Ghana Visa", ni2_text: "Travelers are responsible for obtaining their own Ghana entry visa.",
+    ni3_title: "Travel Insurance", ni3_text: "Travel insurance is required for all participants. Please arrange before departure.",
+    ni4_title: "Delays &amp; Extensions", ni4_text: "Any additional costs arising from delays or trip extensions are the traveler's responsibility.",
+    pay_eye: "Flexible Payments", pay_title: "Sacred Journey Payment Plan",
+    pay_p1: "At Barefoot Afrikan Spiritual Tours, we believe your journey should feel aligned, intentional, and accessible. We offer a flexible payment plan for your upcoming sacred experience.",
+    pay_stat1_lbl: "Tour Date", pay_stat1_val: "November 28",
+    pay_stat2_lbl: "Total Investment", pay_stat2_val: "$1,697",
+    pay_stat3_lbl: "Plan Begins", pay_stat3_val: "May 2026",
+    pay_stat4_lbl: "Final Balance Due", pay_stat4_val: "October 31",
+    pay_q1: "You may choose to make monthly or bi-weekly contributions, allowing you to prepare for your journey with ease and balance. All payments must be completed by the final due date to fully secure your place on this sacred tour.",
+    pay_q2: "We encourage consistent contributions and welcome early payments as part of your preparation and commitment to this experience.",
+    pay_q3: "For guidance or support in arranging your payment flow, please reach out - we are here to walk this path with you.",
+    pay_verse: "Walk gently. Prepare intentionally.<br>Your journey begins long before you arrive.",
+    pay_cta: "&#128172; Arrange Your Payment Plan",
+    price_eye: "Investment", price_title: "Secure Your Place",
+    price_tag: "Price Per Person", price_per: "per person &middot; all-inclusive",
+    price_alert: "Only 9 Spots Available", price_fine: "Secure your spot with a deposit via WhatsApp",
+    price_btn: "&#128172; Book Now via WhatsApp",
+    terms_eye: "Before You Book", terms_title: "Terms &amp; Conditions",
+    t1_title: "Food &amp; Beverage", t1_text: "Two meals provided daily for all registered participants. Lunch and additional snacks are at your own expense. Dietary restrictions should be communicated in advance.",
+    t2_title: "Medical Conditions", t2_text: "Please declare any medical conditions, allergies, or dietary requirements prior to departure. This information will be kept confidential and used only to ensure your safety.",
+    t3_title: "Personal Security", t3_text: "Security arrangements will be in place throughout the tour. Participants are responsible for their personal belongings. Travel insurance is strongly recommended.",
+    t4_title: "Cancellation Policy", t4_text: "All payments are non-refundable. However, your booking may be transferred to another individual if you are unable to attend. Please contact us as early as possible.",
+    contact_eye: "Get in Touch", contact_title: "Connect With Us",
+    contact_wa_lbl: "WhatsApp", contact_social_lbl: "Social Media",
+    footer_text: "&copy; 2026 Barefoot Afrikan Spiritual Tours &bull; B.A.S.T. Ghana Tour &bull; All Rights Reserved",
+    modal_who: "Who We Are", modal_mission_lbl: "Mission",
+    modal_mission: "To offer unique, immersive spiritual experiences that create a journey through the cultures of Afrika for all.",
+    modal_vision_lbl: "Vision",
+    modal_vision: "Connecting people back to their Afrikan culture and identity, creating economic stability and justice for Afrikans, and building a community where everyone can rise.",
+    modal_values_lbl: "Our Values", modal_goals_lbl: "Our Goals",
+    modal_btn: "&#128172; Reserve My Spot",
+    contact_reserve: "&#128172; Reserve My Spot via WhatsApp",
+    mandatory: "MANDATORY",
+    book_wa: "&#128172; Reserve Your Spot on WhatsApp",
+    drawer_about: "About BAST", drawer_contact: "Contact",
+    drawer_book: "&#128172; Reserve My Spot"
+  },
+
+  de: {
+    lang_label: "Sprache",
+    nav_about: "Über uns", nav_contact: "Kontakt", nav_book: "&#128172; Buchen",
+    hero_badge: "Barefoot Afrikan Spiritual Tours",
+    hero_title: "ZURÜCK ZU<br><em>DEN WURZELN</em>",
+    hero_sub: "7 Tage &bull; 5 Regionen &bull; Eine transformative Reise",
+    stat_dates: "Datum", stat_price: "Preis", stat_dest: "Ziel",
+    stat_dates_val: "28. Nov. &ndash; 5. Dez. 2026", stat_price_val: "$1.697 / Person", stat_dest_val: "Ghana, Westafrika",
+    form_name: "Vollst&auml;ndiger Name *", form_email: "E-Mail *", form_phone: "Telefon / WhatsApp",
+    form_guests: "Anzahl G&auml;ste", form_payment: "Zahlungsoption",
+    form_message: "Nachricht", form_msg_placeholder: "Fragen, Ern&auml;hrungsbed&uuml;rfnisse, medizinische Bedingungen...",
+    form_submit: "&#9993;&#65039; PLATZ RESERVIEREN",
+    form_success_title: "Vielen Dank! &#10022;",
+    form_success_text: "Wir melden uns innerhalb von 24 Stunden per WhatsApp oder E-Mail.",
+    spots: "Nur noch 9 Pl&auml;tze verf&uuml;gbar",
+    pay_full: "Vollzahlung - $1.697", pay_plan: "Zahlungsplan - Ab Mai 2026", pay_deposit: "Anzahlung zur Platzsicherung",
+    about_eye: "&Uuml;ber die Reise", about_title: "Eine heilige R&uuml;ckkehr nach Hause",
+    about_p1: "Dies ist mehr als eine Tour - es ist eine Pilgerreise. Durchquere f&uuml;nf verschiedene Regionen Ghanas, von der lebhaften K&uuml;ste Accras bis zum k&ouml;niglichen Herzen des Ashanti-K&ouml;nigreichs, eingetaucht in Kultur, Natur und angestammte Heilung.",
+    about_p2: "Gef&uuml;hrt von erfahrenen einheimischen Experten entfaltet sich jeder Tag wie eine Zeremonie - zu Ehren des Landes, der Menschen und des Geistes des afrikanischen Kontinents.",
+    stat_days: "Tage voller Erlebnisse", stat_regions: "Regionen Ghanas", stat_spots: "Verf&uuml;gbare Pl&auml;tze", stat_price2: "Pro Person Alles-Inklusive",
+    regions_eye: "Wohin wir reisen", regions_title: "F&uuml;nf heilige Regionen",
+    gallery_eye: "Aus vergangenen Reisen", gallery_title: "Erlebe die Magie",
+    itin_eye: "Tag f&uuml;r Tag", itin_title: "Deine 8-t&auml;gige Reise", itin_note: "Tippe auf einen Tag um Details zu sehen.",
+    expand_show: "Tage 4 - 8 anzeigen", expand_hide: "Weniger anzeigen",
+    d1_title: "Ankunft &amp; Willkommen", d1_desc: "Abholung am Flughafen. Einleben in die Unterkunft, neue Reisegef&auml;hrten kennenlernen und gemeinsames Willkommensessen. Der Beginn der Orientierung im heiligen Land Ghana.",
+    d2_title: "Go-Kart, Strand &amp; Entspannung", d2_desc: "Go-Karts und eine Hausparty zum Auftakt. Entspannen am sch&ouml;nen Bojo Beach und die lebhafte K&uuml;stenenergie Ghanas genie&szlig;en.",
+    d3_title: "Geschichte &amp; Kulturerbe - Accra", d3_desc: "Erkundung des Accra Art Centers, der Je Gber Gardens und historischer St&auml;tten der Hauptstadt. Ein tiefer Einblick in Kunst, Musik und Ahnenkultur von Gro&szlig;-Accra.",
+    d4_title: "Volta-Fluss &amp; Resortleben", d4_desc: "Reise in die Volta-Region und Einzug ins Agbenoir Resort am Fluss. Atemberaubende Aussichten, &Uuml;berquerung der ikonischen Adome-Br&uuml;cke.",
+    d5_title: "Abenteuer im Volta-Gebiet", d5_desc: "Kajak auf dem Volta-Fluss, Radfahren durch D&ouml;rfer, Wasserf&auml;lle entdecken und Canopy-Walk hoch &uuml;ber dem Waldboden.",
+    d6_title: "Wilder Norden - Mole-Nationalpark", d6_desc: "Reise in Ghanas wichtigstes Wildreservat. Safarierlebnis mit Elefanten, Antilopen und vielf&auml;ltiger Tierwelt in der offenen Savanne.",
+    d7_title: "Heilige Natur - Bono-Region", d7_desc: "Besuch des Fiema-Affenheiligtums und des heiligen Flusses Tano. Teilnahme an einem Spirituellen Reinigungsritual &amp; Heilkr&auml;uter-Workshop.",
+    d8_title: "Royales Ashanti - Das gro&szlig;e Finale", d8_desc: "Abschluss mit einer royalen Tour durch das Ashanti-K&ouml;nigreich. Besichtigung des Manhyia-Palastes, des legend&auml;ren Okomfo-Anokye-Schwerts und Kumasis Kulturzentrum.",
+    inc_eye: "Im Preis enthalten", inc_title: "Alles was du brauchst", inc_sub: "Deine Investition deckt alle wesentlichen Elemente der Reise ab.",
+    inc1: "Abholung am Flughafen", inc2: "Zwei Mahlzeiten t&auml;glich - Fr&uuml;hst&uuml;ck &amp; Abendessen in ausgew&auml;hlten lokalen Restaurants",
+    inc3: "Unterkunft jede Nacht der 7-t&auml;gigen Reise", inc4: "Spirituelles Reinigungsritual &amp; Heilkr&auml;uter-Workshop",
+    inc5: "Safari-Erlebnis im Mole-Nationalpark", inc6: "Fiema-Affenheiligtum &amp; Heiliger Fluss-Tano-Besuch",
+    inc7: "Bootsfahrt &amp; Kajak-Erlebnis auf dem Volta", inc8: "Wasserf&auml;lle, Strand &amp; Canopy-Walk-Abenteuer",
+    inc9: "Vollst&auml;ndige Ashanti-K&ouml;nigtour - Manhyia-Palast &amp; Okomfo Anokye", inc10: "Alle Bodentransporte durch alle 5 Regionen",
+    inc11: "Go-Kart-Tickets an Tag 2 inbegriffen", inc12: "Erfahrene F&uuml;hrer und kulturelle Erkl&auml;rungen",
+    notinc_eye: "Bitte beachten", notinc_title: "Nicht im Preis enthalten",
+    ni1_title: "Internationale Fl&uuml;ge", ni1_text: "Fl&uuml;ge nach und von Ghana sind nicht im Paketpreis enthalten.",
+    ni2_title: "Ghana-Visum", ni2_text: "Reisende sind selbst verantwortlich f&uuml;r die Beschaffung ihres Ghana-Einreisevisums.",
+    ni3_title: "Reiseversicherung", ni3_text: "Eine Reiseversicherung ist f&uuml;r alle Teilnehmer Pflicht. Bitte vor der Abreise abschlie&szlig;en.",
+    ni4_title: "Versp&auml;tungen &amp; Verl&auml;ngerungen", ni4_text: "Zus&auml;tzliche Kosten durch Versp&auml;tungen oder Reiseverl&auml;ngerungen gehen zu Lasten der Reisenden.",
+    pay_eye: "Flexible Zahlungen", pay_title: "Zahlungsplan f&uuml;r die heilige Reise",
+    pay_p1: "Bei Barefoot Afrikan Spiritual Tours glauben wir, dass sich deine Reise ausgerichtet, bewusst und zug&auml;nglich anf&uuml;hlen soll. Wir bieten einen flexiblen Zahlungsplan an.",
+    pay_stat1_lbl: "Reisedatum", pay_stat1_val: "28. November",
+    pay_stat2_lbl: "Gesamtinvestition", pay_stat2_val: "$1.697",
+    pay_stat3_lbl: "Planbeginn", pay_stat3_val: "Mai 2026",
+    pay_stat4_lbl: "Letzte Zahlung f&auml;llig", pay_stat4_val: "31. Oktober",
+    pay_q1: "Du kannst monatliche oder zweichentliche Beitr&auml;ge leisten, damit du dich in Ruhe auf deine Reise vorbereiten kannst. Alle Zahlungen m&uuml;ssen bis zum F&auml;lligkeitsdatum abgeschlossen sein.",
+    pay_q2: "Wir ermutigen zu regelm&auml;&szlig;igen Beitr&auml;gen und begr&uuml;&szlig;en fr&uuml;hzeitige Zahlungen als Teil deiner Vorbereitung.",
+    pay_q3: "F&uuml;r Unterst&uuml;tzung bei der Zahlungsgestaltung melde dich gerne - wir begleiten dich auf diesem Weg.",
+    pay_verse: "Geh behutsam. Bereite dich bewusst vor.<br>Deine Reise beginnt lange bevor du ankommst.",
+    pay_cta: "&#128172; Zahlungsplan vereinbaren",
+    price_eye: "Investition", price_title: "Sichere deinen Platz",
+    price_tag: "Preis pro Person", price_per: "pro Person &middot; alles-inklusive",
+    price_alert: "Nur noch 9 Pl&auml;tze verf&uuml;gbar", price_fine: "Sichere deinen Platz mit einer Anzahlung via WhatsApp",
+    price_btn: "&#128172; Jetzt buchen via WhatsApp",
+    terms_eye: "Vor der Buchung", terms_title: "Allgemeine Gesch&auml;ftsbedingungen",
+    t1_title: "Verpflegung", t1_text: "T&auml;glich zwei Mahlzeiten f&uuml;r alle angemeldeten Teilnehmer. Mittagessen und Snacks auf eigene Kosten. Di&auml;tbed&uuml;rfnisse bitte im Voraus mitteilen.",
+    t2_title: "Gesundheitliche Bedingungen", t2_text: "Bitte alle Erkrankungen, Allergien oder Di&auml;tanforderungen vor Abreise mitteilen. Diese Informationen werden vertraulich behandelt.",
+    t3_title: "Pers&ouml;nliche Sicherheit", t3_text: "W&auml;hrend der gesamten Tour sind Sicherheitsvorkehrungen getroffen. Teilnehmer sind f&uuml;r ihr pers&ouml;nliches Eigentum verantwortlich.",
+    t4_title: "Stornierungspolitik", t4_text: "Alle Zahlungen sind nicht erstattungsf&auml;hig. Eine Buchungs&uuml;bertragung auf eine andere Person ist jedoch m&ouml;glich.",
+    contact_eye: "Kontaktiere uns", contact_title: "Verbinde dich mit uns",
+    contact_wa_lbl: "WhatsApp", contact_social_lbl: "Soziale Medien",
+    footer_text: "&copy; 2026 Barefoot Afrikan Spiritual Tours &bull; B.A.S.T. Ghana Tour &bull; Alle Rechte vorbehalten",
+    modal_who: "Wer wir sind", modal_mission_lbl: "Mission",
+    modal_mission: "Einzigartige, intensive spirituelle Erlebnisse zu bieten, die eine Reise durch die Kulturen Afrikas f&uuml;r alle erm&ouml;glichen.",
+    modal_vision_lbl: "Vision",
+    modal_vision: "Menschen wieder mit ihrer afrikanischen Kultur und Identit&auml;t zu verbinden, wirtschaftliche Stabilit&auml;t und Gerechtigkeit f&uuml;r Afrikaner zu schaffen.",
+    modal_values_lbl: "Unsere Werte", modal_goals_lbl: "Unsere Ziele",
+    modal_btn: "&#128172; Meinen Platz reservieren",
+    contact_reserve: "&#128172; Meinen Platz via WhatsApp reservieren",
+    mandatory: "PFLICHT",
+    book_wa: "&#128172; Platz via WhatsApp reservieren",
+    drawer_about: "&Uuml;ber BAST", drawer_contact: "Kontakt",
+    drawer_book: "&#128172; Meinen Platz reservieren"
+  },
+
+  es: {
+    lang_label: "Idioma",
+    nav_about: "Acerca de", nav_contact: "Contacto", nav_book: "&#128172; Reservar",
+    hero_badge: "Barefoot Afrikan Spiritual Tours",
+    hero_title: "REGRESO A<br><em>LAS RA&Iacute;CES</em>",
+    hero_sub: "7 D&iacute;as &bull; 5 Regiones &bull; Un Viaje Transformador",
+    stat_dates: "Fechas", stat_price: "Precio", stat_dest: "Destino",
+    stat_dates_val: "28 Nov &ndash; 5 Dic 2026", stat_price_val: "$1,697 / persona", stat_dest_val: "Ghana, &Aacute;frica Occidental",
+    form_name: "Nombre Completo *", form_email: "Correo Electr&oacute;nico *", form_phone: "Tel&eacute;fono / WhatsApp",
+    form_guests: "N&uacute;mero de Hu&eacute;spedes", form_payment: "Opci&oacute;n de Pago",
+    form_message: "Mensaje", form_msg_placeholder: "Preguntas, necesidades diet&eacute;ticas, condiciones m&eacute;dicas...",
+    form_submit: "&#9993;&#65039; RESERVA TU LUGAR",
+    form_success_title: "&iexcl;Gracias! &#10022;",
+    form_success_text: "Nos pondremos en contacto v&iacute;a WhatsApp o correo electr&oacute;nico en 24 horas.",
+    spots: "Solo 9 Lugares Disponibles",
+    pay_full: "Pago Completo - $1,697", pay_plan: "Plan de Pago - Desde Mayo 2026", pay_deposit: "Dep&oacute;sito para Reservar",
+    about_eye: "Sobre el Viaje", about_title: "Un Sagrado Regreso al Hogar",
+    about_p1: "Esto es m&aacute;s que un tour - es una peregrinaci&oacute;n. Recorre cinco regiones distintas de Ghana, desde la vibrante costa de Accra hasta el coraz&oacute;n real del Reino Ashanti, inmerso en cultura, naturaleza y sanaci&oacute;n ancestral.",
+    about_p2: "Guiado por expertos locales experimentados, cada d&iacute;a se desarrolla como una ceremonia - honrando la tierra, la gente y el esp&iacute;ritu del continente africano.",
+    stat_days: "D&iacute;as de Inmersi&oacute;n", stat_regions: "Regiones de Ghana", stat_spots: "Lugares Disponibles", stat_price2: "Por Persona Todo Incluido",
+    regions_eye: "A D&oacute;nde Vamos", regions_title: "Cinco Regiones Sagradas",
+    gallery_eye: "De Viajes Anteriores", gallery_title: "Vive la Magia",
+    itin_eye: "D&iacute;a a D&iacute;a", itin_title: "Tu Viaje de 8 D&iacute;as", itin_note: "Toca cualquier d&iacute;a para ver los detalles.",
+    expand_show: "Ver D&iacute;as 4 - 8", expand_hide: "Ver Menos",
+    d1_title: "Llegada &amp; Bienvenida", d1_desc: "Recogida en el aeropuerto. Instalaci&oacute;n en el alojamiento, conocer a los compa&ntilde;eros de viaje y cena de bienvenida. El viaje comienza con una orientaci&oacute;n en la sagrada tierra de Ghana.",
+    d2_title: "Go-Kart, Playa &amp; Relax", d2_desc: "Go-Karts y una fiesta para empezar la experiencia. Relajarse en la hermosa Bojo Beach y disfrutar de la vibrante energ&iacute;a costera de Ghana.",
+    d3_title: "Historia &amp; Patrimonio - Accra", d3_desc: "Explorar el Centro de Arte de Accra, los Jardines Je Gber y sitios hist&oacute;ricos de la capital. Una profunda inmersi&oacute;n en el arte, la m&uacute;sica y las ra&iacute;ces ancestrales.",
+    d4_title: "R&iacute;o Volta &amp; Vida en el Resort", d4_desc: "Viaje a la Regi&oacute;n del Volta y registro en Agbenoir Resorts. Disfruta de vistas impresionantes y cruza el ic&oacute;nico Puente Adome.",
+    d5_title: "Aventura en el Volta", d5_desc: "Kayak en el r&iacute;o Volta, ciclismo por aldeas, cascadas impresionantes y caminata por el puente de dosel sobre el suelo del bosque.",
+    d6_title: "Norte Salvaje - Parque Nacional Mole", d6_desc: "Viaje a la principal reserva de vida silvestre de Ghana. Safari con elefantes, ant&iacute;lopes y fauna diversa en la sabana abierta.",
+    d7_title: "Naturaleza Sagrada - Regi&oacute;n Bono", d7_desc: "Visita al Santuario de Monos Fiema y el sagrado R&iacute;o Tano. Taller de Limpieza Espiritual &amp; Sanaci&oacute;n con Hierbas Medicinales.",
+    d8_title: "Ashanti Real - El Gran Finale", d8_desc: "Una despedida real por el Reino Ashanti. Tour por el Palacio Manhyia, la legendaria Espada de Okomfo Anokye y el centro cultural de Kumasi.",
+    inc_eye: "Qu&eacute; Incluye", inc_title: "Todo Lo Que Necesitas", inc_sub: "Tu inversi&oacute;n cubre todos los elementos esenciales del viaje.",
+    inc1: "Recogida en el aeropuerto", inc2: "Dos comidas diarias - desayuno &amp; cena en locales seleccionados",
+    inc3: "Alojamiento cada noche durante el viaje de 7 d&iacute;as", inc4: "Taller de Limpieza Espiritual &amp; Sanaci&oacute;n con Hierbas",
+    inc5: "Experiencia de safari en el Parque Nacional Mole", inc6: "Santuario de Monos Fiema &amp; visita al sagrado R&iacute;o Tano",
+    inc7: "Crucero en barco &amp; experiencia en kayak en el Volta", inc8: "Cascadas, Playa &amp; aventuras de Caminata por el Dosel",
+    inc9: "Tour completo del Reino Ashanti - Palacio Manhyia &amp; Okomfo Anokye", inc10: "Todo el transporte terrestre por las 5 regiones",
+    inc11: "Tickets de Go-Kart incluidos el D&iacute;a 2", inc12: "Gu&iacute;as expertos e interpretaci&oacute;n cultural",
+    notinc_eye: "Por Favor Ten en Cuenta", notinc_title: "Qu&eacute; No Est&aacute; Incluido",
+    ni1_title: "Vuelos Internacionales", ni1_text: "Los vuelos hacia y desde Ghana no est&aacute;n incluidos en el precio del paquete.",
+    ni2_title: "Visa de Ghana", ni2_text: "Los viajeros son responsables de obtener su propio visado de entrada a Ghana.",
+    ni3_title: "Seguro de Viaje", ni3_text: "El seguro de viaje es obligatorio para todos los participantes. Por favor arr&eacute;glalo antes de la salida.",
+    ni4_title: "Retrasos &amp; Extensiones", ni4_text: "Cualquier costo adicional derivado de retrasos o extensiones del viaje es responsabilidad del viajero.",
+    pay_eye: "Pagos Flexibles", pay_title: "Plan de Pago para el Viaje Sagrado",
+    pay_p1: "En Barefoot Afrikan Spiritual Tours, creemos que tu viaje debe sentirse alineado, intencional y accesible. Ofrecemos un plan de pago flexible.",
+    pay_stat1_lbl: "Fecha del Tour", pay_stat1_val: "28 de Noviembre",
+    pay_stat2_lbl: "Inversi&oacute;n Total", pay_stat2_val: "$1,697",
+    pay_stat3_lbl: "Inicio del Plan", pay_stat3_val: "Mayo 2026",
+    pay_stat4_lbl: "Saldo Final Vence", pay_stat4_val: "31 de Octubre",
+    pay_q1: "Puedes elegir contribuciones mensuales o quincenales, permitiendote prepararte para tu viaje con facilidad. Todos los pagos deben completarse antes de la fecha l&iacute;mite.",
+    pay_q2: "Alentamos las contribuciones regulares y damos la bienvenida a los pagos anticipados como parte de tu preparaci&oacute;n.",
+    pay_q3: "Para orientaci&oacute;n o apoyo en el arreglo de tus pagos, cont&aacute;ctanos - estamos aqu&iacute; para acompa&ntilde;arte.",
+    pay_verse: "Camina suavemente. Prep&aacute;rate intencionalmente.<br>Tu viaje comienza mucho antes de que llegues.",
+    pay_cta: "&#128172; Organizar Plan de Pago",
+    price_eye: "Inversi&oacute;n", price_title: "Asegura Tu Lugar",
+    price_tag: "Precio Por Persona", price_per: "por persona &middot; todo incluido",
+    price_alert: "Solo 9 Lugares Disponibles", price_fine: "Asegura tu lugar con un dep&oacute;sito v&iacute;a WhatsApp",
+    price_btn: "&#128172; Reservar Ahora via WhatsApp",
+    terms_eye: "Antes de Reservar", terms_title: "T&eacute;rminos &amp; Condiciones",
+    t1_title: "Alimentaci&oacute;n &amp; Bebidas", t1_text: "Dos comidas diarias para todos los participantes registrados. El almuerzo y los aperitivos adicionales son a tu cargo. Las restricciones diet&eacute;ticas deben comunicarse con antelaci&oacute;n.",
+    t2_title: "Condiciones M&eacute;dicas", t2_text: "Por favor declara cualquier condici&oacute;n m&eacute;dica, alergia o requisito diet&eacute;tico antes de la salida. Esta informaci&oacute;n ser&aacute; confidencial.",
+    t3_title: "Seguridad Personal", t3_text: "Se implementar&aacute;n medidas de seguridad durante todo el tour. Los participantes son responsables de sus pertenencias personales.",
+    t4_title: "Pol&iacute;tica de Cancelaci&oacute;n", t4_text: "Todos los pagos son no reembolsables. Sin embargo, tu reserva puede transferirse a otra persona si no puedes asistir.",
+    contact_eye: "Ponte en Contacto", contact_title: "Con&eacute;ctate Con Nosotros",
+    contact_wa_lbl: "WhatsApp", contact_social_lbl: "Redes Sociales",
+    footer_text: "&copy; 2026 Barefoot Afrikan Spiritual Tours &bull; B.A.S.T. Ghana Tour &bull; Todos los Derechos Reservados",
+    modal_who: "Qui&eacute;nes Somos", modal_mission_lbl: "Misi&oacute;n",
+    modal_mission: "Ofrecer experiencias espirituales &uacute;nicas e inmersivas que creen un viaje a trav&eacute;s de las culturas de &Aacute;frica para todos.",
+    modal_vision_lbl: "Visi&oacute;n",
+    modal_vision: "Reconectar a las personas con su cultura e identidad africana, creando estabilidad econ&oacute;mica y justicia para los africanos.",
+    modal_values_lbl: "Nuestros Valores", modal_goals_lbl: "Nuestros Objetivos",
+    modal_btn: "&#128172; Reservar Mi Lugar",
+    contact_reserve: "&#128172; Reservar Mi Lugar via WhatsApp",
+    mandatory: "OBLIGATORIO",
+    book_wa: "&#128172; Reservar Lugar en WhatsApp",
+    drawer_about: "Sobre BAST", drawer_contact: "Contacto",
+    drawer_book: "&#128172; Reservar Mi Lugar"
+  },
+
+  pt: {
+    lang_label: "Idioma",
+    nav_about: "Sobre", nav_contact: "Contato", nav_book: "&#128172; Reservar",
+    hero_badge: "Barefoot Afrikan Spiritual Tours",
+    hero_title: "RETORNO &Agrave;S<br><em>RA&Iacute;ZES</em>",
+    hero_sub: "7 Dias &bull; 5 Regi&otilde;es &bull; Uma Jornada Transformadora",
+    stat_dates: "Datas", stat_price: "Pre&ccedil;o", stat_dest: "Destino",
+    stat_dates_val: "28 Nov &ndash; 5 Dez 2026", stat_price_val: "$1.697 / pessoa", stat_dest_val: "Gana, &Aacute;frica Ocidental",
+    form_name: "Nome Completo *", form_email: "E-mail *", form_phone: "Telefone / WhatsApp",
+    form_guests: "N&uacute;mero de H&oacute;spedes", form_payment: "Op&ccedil;&atilde;o de Pagamento",
+    form_message: "Mensagem", form_msg_placeholder: "D&uacute;vidas, necessidades diet&eacute;ticas, condi&ccedil;&otilde;es m&eacute;dicas...",
+    form_submit: "&#9993;&#65039; RESERVAR MEU LUGAR",
+    form_success_title: "Obrigado! &#10022;",
+    form_success_text: "Entraremos em contato via WhatsApp ou e-mail em 24 horas.",
+    spots: "Apenas 9 Vagas Dispon&iacute;veis",
+    pay_full: "Pagamento Completo - $1.697", pay_plan: "Plano de Pagamento - A partir de Maio 2026", pay_deposit: "Dep&oacute;sito para Garantir Vaga",
+    about_eye: "Sobre a Jornada", about_title: "Um Sagrado Retorno ao Lar",
+    about_p1: "Isto &eacute; mais do que um tour - &eacute; uma peregrina&ccedil;&atilde;o. Percorra cinco regi&otilde;es distintas de Gana, da vibrante costa de Accra ao cora&ccedil;&atilde;o real do Reino Ashanti, imerso em cultura, natureza e cura ancestral.",
+    about_p2: "Guiado por especialistas locais experientes, cada dia se desenrola como uma cerim&ocirc;nia - honrando a terra, o povo e o esp&iacute;rito do continente africano.",
+    stat_days: "Dias de Immers&atilde;o", stat_regions: "Regi&otilde;es de Gana", stat_spots: "Vagas Restantes", stat_price2: "Por Pessoa Tudo Inclu&iacute;do",
+    regions_eye: "Para Onde Vamos", regions_title: "Cinco Regi&otilde;es Sagradas",
+    gallery_eye: "De Viagens Anteriores", gallery_title: "Experiencie a Magia",
+    itin_eye: "Dia a Dia", itin_title: "Sua Jornada de 8 Dias", itin_note: "Toque em qualquer dia para ver os detalhes.",
+    expand_show: "Ver Dias 4 - 8", expand_hide: "Ver Menos",
+    d1_title: "Chegada &amp; Boas-Vindas", d1_desc: "Transfer do aeroporto. Instala&ccedil;&atilde;o na acomoda&ccedil;&atilde;o, conhecer os companheiros de viagem e jantar de boas-vindas. A jornada come&ccedil;a com uma orienta&ccedil;&atilde;o na sagrada terra de Gana.",
+    d2_title: "Go-Kart, Praia &amp; Relaxamento", d2_desc: "Go-Karts e uma festa para come&ccedil;ar a experi&ecirc;ncia. Relaxar na bela Bojo Beach e desfrutar da vibrante energia costeira de Gana.",
+    d3_title: "Hist&oacute;ria &amp; Patrim&ocirc;nio - Accra", d3_desc: "Explorar o Centro de Arte de Accra, Jardins Je Gber e s&iacute;tios hist&oacute;ricos da capital. Uma mergulho profundo na arte, m&uacute;sica e ra&iacute;zes ancestrais.",
+    d4_title: "Rio Volta &amp; Vida no Resort", d4_desc: "Viagem &agrave; Regi&atilde;o do Volta e check-in no Agbenoir Resorts. Vistas deslumbrantes e travessia da ic&ocirc;nica Ponte Adome.",
+    d5_title: "Aventura no Volta", d5_desc: "Caiaque no Rio Volta, ciclismo por aldeias, cachoeiras impressionantes e caminhada pela ponte de dossel sobre o ch&atilde;o da floresta.",
+    d6_title: "Norte Selvagem - Parque Nacional Mole", d6_desc: "Viagem &agrave; principal reserva de vida selvagem de Gana. Safari com elefantes, ant&iacute;lopes e fauna diversa na savana aberta.",
+    d7_title: "Natureza Sagrada - Regi&atilde;o Bono", d7_desc: "Visita ao Santu&aacute;rio de Macacos Fiema e o sagrado Rio Tano. Oficina de Limpeza Espiritual &amp; Cura com Ervas Medicinais.",
+    d8_title: "Ashanti Real - O Grande Finale", d8_desc: "Uma despedida real pelo Reino Ashanti. Tour pelo Pal&aacute;cio Manhyia, a lend&aacute;ria Espada de Okomfo Anokye e o centro cultural de Kumasi.",
+    inc_eye: "O Que Est&aacute; Inclu&iacute;do", inc_title: "Tudo Que Voc&ecirc; Precisa", inc_sub: "Seu investimento cobre todos os elementos essenciais da jornada.",
+    inc1: "Transfer do aeroporto na chegada", inc2: "Duas refei&ccedil;&otilde;es di&aacute;rias - caf&eacute; da manh&atilde; &amp; jantar em locais curados",
+    inc3: "Acomoda&ccedil;&atilde;o todas as noites durante a jornada de 7 dias", inc4: "Oficina de Limpeza Espiritual &amp; Cura com Ervas",
+    inc5: "Experi&ecirc;ncia de safari no Parque Nacional Mole", inc6: "Santu&aacute;rio de Macacos Fiema &amp; visita ao sagrado Rio Tano",
+    inc7: "Cruzeiro de barco &amp; experi&ecirc;ncia de caiaque no Volta", inc8: "Cachoeiras, Praia &amp; aventuras de Caminhada pelo Dossel",
+    inc9: "Tour completo do Reino Ashanti - Pal&aacute;cio Manhyia &amp; Okomfo Anokye", inc10: "Todo transporte terrestre pelas 5 regi&otilde;es",
+    inc11: "Ingressos de Go-Kart inclu&iacute;dos no Dia 2", inc12: "Guias especializados e interpreta&ccedil;&atilde;o cultural",
+    notinc_eye: "Por Favor Note", notinc_title: "O Que N&atilde;o Est&aacute; Inclu&iacute;do",
+    ni1_title: "Voos Internacionais", ni1_text: "Voos para e de Gana n&atilde;o est&atilde;o inclu&iacute;dos no pre&ccedil;o do pacote.",
+    ni2_title: "Visto para Gana", ni2_text: "Os viajantes s&atilde;o respons&aacute;veis por obter seu pr&oacute;prio visto de entrada em Gana.",
+    ni3_title: "Seguro Viagem", ni3_text: "O seguro viagem &eacute; obrigat&oacute;rio para todos os participantes. Por favor providencie antes da partida.",
+    ni4_title: "Atrasos &amp; Extens&otilde;es", ni4_text: "Quaisquer custos adicionais decorrentes de atrasos ou extens&otilde;es da viagem s&atilde;o de responsabilidade do viajante.",
+    pay_eye: "Pagamentos Flex&iacute;veis", pay_title: "Plano de Pagamento da Jornada Sagrada",
+    pay_p1: "Na Barefoot Afrikan Spiritual Tours, acreditamos que sua jornada deve parecer alinhada, intencional e acess&iacute;vel. Oferecemos um plano de pagamento flex&iacute;vel.",
+    pay_stat1_lbl: "Data do Tour", pay_stat1_val: "28 de Novembro",
+    pay_stat2_lbl: "Investimento Total", pay_stat2_val: "$1.697",
+    pay_stat3_lbl: "In&iacute;cio do Plano", pay_stat3_val: "Maio 2026",
+    pay_stat4_lbl: "Saldo Final Vence", pay_stat4_val: "31 de Outubro",
+    pay_q1: "Voc&ecirc; pode escolher contribui&ccedil;&otilde;es mensais ou quinzenais, permitindo-lhe se preparar para sua jornada com facilidade. Todos os pagamentos devem ser conclu&iacute;dos at&eacute; a data final.",
+    pay_q2: "Encorajamos contribui&ccedil;&otilde;es regulares e boas-vindas a pagamentos antecipados como parte de sua prepara&ccedil;&atilde;o.",
+    pay_q3: "Para orienta&ccedil;&atilde;o ou suporte no arranjo de seus pagamentos, entre em contato - estamos aqui para caminhar com voc&ecirc;.",
+    pay_verse: "Caminhe suavemente. Prepare-se intencionalmente.<br>Sua jornada come&ccedil;a muito antes de voc&ecirc; chegar.",
+    pay_cta: "&#128172; Organizar Plano de Pagamento",
+    price_eye: "Investimento", price_title: "Garanta Seu Lugar",
+    price_tag: "Pre&ccedil;o Por Pessoa", price_per: "por pessoa &middot; tudo inclu&iacute;do",
+    price_alert: "Apenas 9 Vagas Dispon&iacute;veis", price_fine: "Garanta sua vaga com um dep&oacute;sito via WhatsApp",
+    price_btn: "&#128172; Reservar Agora via WhatsApp",
+    terms_eye: "Antes de Reservar", terms_title: "Termos &amp; Condi&ccedil;&otilde;es",
+    t1_title: "Alimenta&ccedil;&atilde;o &amp; Bebidas", t1_text: "Duas refei&ccedil;&otilde;es di&aacute;rias para todos os participantes registrados. Almo&ccedil;o e lanches adicionais por conta pr&oacute;pria. Restri&ccedil;&otilde;es diet&eacute;ticas devem ser informadas antecipadamente.",
+    t2_title: "Condi&ccedil;&otilde;es M&eacute;dicas", t2_text: "Por favor declare quaisquer condi&ccedil;&otilde;es m&eacute;dicas, alergias ou requisitos diet&eacute;ticos antes da partida. Informa&ccedil;&otilde;es ser&atilde;o mantidas em sigilo.",
+    t3_title: "Seguran&ccedil;a Pessoal", t3_text: "Medidas de seguran&ccedil;a estar&atilde;o em vigor durante todo o tour. Os participantes s&atilde;o respons&aacute;veis por seus pertences pessoais.",
+    t4_title: "Pol&iacute;tica de Cancelamento", t4_text: "Todos os pagamentos s&atilde;o n&atilde;o reembols&aacute;veis. No entanto, sua reserva pode ser transferida para outra pessoa se voc&ecirc; n&atilde;o puder comparecer.",
+    contact_eye: "Entre em Contato", contact_title: "Conecte-se Conosco",
+    contact_wa_lbl: "WhatsApp", contact_social_lbl: "Redes Sociais",
+    footer_text: "&copy; 2026 Barefoot Afrikan Spiritual Tours &bull; B.A.S.T. Ghana Tour &bull; Todos os Direitos Reservados",
+    modal_who: "Quem Somos", modal_mission_lbl: "Miss&atilde;o",
+    modal_mission: "Oferecer experi&ecirc;ncias espirituais &uacute;nicas e imersivas que criam uma jornada pelas culturas da &Aacute;frica para todos.",
+    modal_vision_lbl: "Vis&atilde;o",
+    modal_vision: "Reconectar as pessoas com sua cultura e identidade africana, criando estabilidade econ&ocirc;mica e justi&ccedil;a para os africanos.",
+    modal_values_lbl: "Nossos Valores", modal_goals_lbl: "Nossos Objetivos",
+    modal_btn: "&#128172; Reservar Meu Lugar",
+    contact_reserve: "&#128172; Reservar Meu Lugar via WhatsApp",
+    mandatory: "OBRIGAT&Oacute;RIO",
+    book_wa: "&#128172; Reservar Lugar no WhatsApp",
+    drawer_about: "Sobre BAST", drawer_contact: "Contato",
+    drawer_book: "&#128172; Reservar Meu Lugar"
+  },
+
+  fr: {
+    lang_label: "Langue",
+    nav_about: "&Agrave; propos", nav_contact: "Contact", nav_book: "&#128172; R&eacute;server",
+    hero_badge: "Barefoot Afrikan Spiritual Tours",
+    hero_title: "RETOUR AUX<br><em>RACINES</em>",
+    hero_sub: "7 Jours &bull; 5 R&eacute;gions &bull; Un Voyage Transformateur",
+    stat_dates: "Dates", stat_price: "Prix", stat_dest: "Destination",
+    stat_dates_val: "28 Nov &ndash; 5 D&eacute;c 2026", stat_price_val: "$1 697 / personne", stat_dest_val: "Ghana, Afrique de l&rsquo;Ouest",
+    form_name: "Nom Complet *", form_email: "E-mail *", form_phone: "T&eacute;l&eacute;phone / WhatsApp",
+    form_guests: "Nombre d&rsquo;invit&eacute;s", form_payment: "Option de paiement",
+    form_message: "Message", form_msg_placeholder: "Questions, besoins alimentaires, conditions m&eacute;dicales...",
+    form_submit: "&#9993;&#65039; R&Eacute;SERVER MA PLACE",
+    form_success_title: "Merci ! &#10022;",
+    form_success_text: "Nous vous contacterons par WhatsApp ou e-mail dans les 24 heures.",
+    spots: "Seulement 9 Places Disponibles",
+    pay_full: "Paiement Complet - $1 697", pay_plan: "Plan de Paiement - D&egrave;s Mai 2026", pay_deposit: "Acompte pour R&eacute;server",
+    about_eye: "Sur le Voyage", about_title: "Un Sacr&eacute; Retour &agrave; la Maison",
+    about_p1: "C&rsquo;est plus qu&rsquo;un tour - c&rsquo;est un p&egrave;lerinage. Traversez cinq r&eacute;gions distinctes du Ghana, de la c&ocirc;te vibrante d&rsquo;Accra au c&oelig;ur royal du Royaume Ashanti, immerg&eacute; dans la culture, la nature et la gu&eacute;rison ancestrale.",
+    about_p2: "Guid&eacute; par des experts locaux exp&eacute;riment&eacute;s, chaque jour se d&eacute;roule comme une c&eacute;r&eacute;monie - honorant la terre, le peuple et l&rsquo;esprit du continent africain.",
+    stat_days: "Jours d&rsquo;Immersion", stat_regions: "R&eacute;gions du Ghana", stat_spots: "Places Restantes", stat_price2: "Par Personne Tout Compris",
+    regions_eye: "O&ugrave; Nous Allons", regions_title: "Cinq R&eacute;gions Sacr&eacute;es",
+    gallery_eye: "Des Voyages Pass&eacute;s", gallery_title: "Vivez la Magie",
+    itin_eye: "Jour apr&egrave;s Jour", itin_title: "Votre Voyage de 8 Jours", itin_note: "Appuyez sur un jour pour voir les d&eacute;tails.",
+    expand_show: "Voir Jours 4 - 8", expand_hide: "Voir Moins",
+    d1_title: "Arriv&eacute;e &amp; Bienvenue", d1_desc: "Transfert de l&rsquo;a&eacute;roport. Installation dans l&rsquo;h&eacute;bergement, rencontre des compagnons de voyage et d&icirc;ner de bienvenue. Le voyage commence par une orientation sur la terre sacr&eacute;e du Ghana.",
+    d2_title: "Go-Kart, Plage &amp; D&eacute;tente", d2_desc: "Go-Karts et une f&ecirc;te pour lancer l&rsquo;exp&eacute;rience. Se relaxer sur la belle Bojo Beach et profiter de l&rsquo;&eacute;nergie c&ocirc;ti&egrave;re vibrante du Ghana.",
+    d3_title: "Histoire &amp; Patrimoine - Accra", d3_desc: "Explorer le Centre d&rsquo;Art d&rsquo;Accra, les Jardins Je Gber et les sites historiques de la capitale. Une plong&eacute;e profonde dans l&rsquo;art, la musique et les racines ancestrales.",
+    d4_title: "Fleuve Volta &amp; Vie au Resort", d4_desc: "Voyage dans la R&eacute;gion du Volta et enregistrement &agrave; Agbenoir Resorts. Vues imprenables et travers&eacute;e de l&rsquo;iconique Pont Adome.",
+    d5_title: "Aventure dans le Volta", d5_desc: "Kayak sur le Volta, v&eacute;lo dans des villages, cascades majestueuses et promenade sur la passerelle de la voûte foresti&egrave;re.",
+    d6_title: "Nord Sauvage - Parc National Mole", d6_desc: "Voyage dans la principale r&eacute;serve naturelle du Ghana. Safari avec &eacute;l&eacute;phants, antilopes et faune diversifi&eacute;e dans la savane ouverte.",
+    d7_title: "Nature Sacr&eacute;e - R&eacute;gion Bono", d7_desc: "Visite du Sanctuaire des Singes Fiema et du sacr&eacute; fleuve Tano. Atelier de Purification Spirituelle &amp; de Gu&eacute;rison aux Herbes M&eacute;dicinales.",
+    d8_title: "Ashanti Royal - Le Grand Finale", d8_desc: "Une conclusion royale &agrave; travers le Royaume Ashanti. Tour du Palais Manhyia, l&rsquo;&eacute;p&eacute;e l&eacute;gendaire d&rsquo;Okomfo Anokye et le centre culturel de Kumasi.",
+    inc_eye: "Ce Qui Est Inclus", inc_title: "Tout Ce Dont Vous Avez Besoin", inc_sub: "Votre investissement couvre tous les &eacute;l&eacute;ments essentiels du voyage.",
+    inc1: "Transfert a&eacute;roport &agrave; l&rsquo;arriv&eacute;e", inc2: "Deux repas par jour - petit-d&eacute;jeuner &amp; d&icirc;ner dans des lieux locaux s&eacute;lectionn&eacute;s",
+    inc3: "H&eacute;bergement chaque nuit tout au long du voyage de 7 jours", inc4: "Atelier de Purification Spirituelle &amp; Gu&eacute;rison aux Herbes",
+    inc5: "Exp&eacute;rience de safari au Parc National Mole", inc6: "Sanctuaire des Singes Fiema &amp; visite du sacr&eacute; Fleuve Tano",
+    inc7: "Croisi&egrave;re en bateau &amp; exp&eacute;rience de kayak sur le Volta", inc8: "Cascades, Plage &amp; aventures de Promenade en voûte foresti&egrave;re",
+    inc9: "Tour complet du Royaume Ashanti - Palais Manhyia &amp; Okomfo Anokye", inc10: "Tous les transports terrestres dans les 5 r&eacute;gions",
+    inc11: "Billets de Go-Kart inclus le Jour 2", inc12: "Guides experts et interpr&eacute;tation culturelle",
+    notinc_eye: "Veuillez Noter", notinc_title: "Ce Qui N&rsquo;Est Pas Inclus",
+    ni1_title: "Vols Internationaux", ni1_text: "Les vols vers et depuis le Ghana ne sont pas inclus dans le prix du forfait.",
+    ni2_title: "Visa Ghana", ni2_text: "Les voyageurs sont responsables de l&rsquo;obtention de leur propre visa d&rsquo;entr&eacute;e au Ghana.",
+    ni3_title: "Assurance Voyage", ni3_text: "L&rsquo;assurance voyage est obligatoire pour tous les participants. Veuillez la souscrire avant le d&eacute;part.",
+    ni4_title: "Retards &amp; Extensions", ni4_text: "Tout co&ucirc;t suppl&eacute;mentaire d&ucirc; &agrave; des retards ou des prolongations de voyage est &agrave; la charge du voyageur.",
+    pay_eye: "Paiements Flexibles", pay_title: "Plan de Paiement du Voyage Sacr&eacute;",
+    pay_p1: "Chez Barefoot Afrikan Spiritual Tours, nous pensons que votre voyage doit &ecirc;tre align&eacute;, intentionnel et accessible. Nous proposons un plan de paiement flexible.",
+    pay_stat1_lbl: "Date du Tour", pay_stat1_val: "28 Novembre",
+    pay_stat2_lbl: "Investissement Total", pay_stat2_val: "$1 697",
+    pay_stat3_lbl: "D&eacute;but du Plan", pay_stat3_val: "Mai 2026",
+    pay_stat4_lbl: "Solde Final D&ucirc;", pay_stat4_val: "31 Octobre",
+    pay_q1: "Vous pouvez choisir des contributions mensuelles ou bimensuelles, vous permettant de vous pr&eacute;parer pour votre voyage en toute s&eacute;r&eacute;nit&eacute;. Tous les paiements doivent &ecirc;tre effectu&eacute;s avant la date limite.",
+    pay_q2: "Nous encourageons les contributions r&eacute;guli&egrave;res et accueillons favorablement les paiements anticip&eacute;s dans le cadre de votre pr&eacute;paration.",
+    pay_q3: "Pour des conseils ou un soutien dans l&rsquo;organisation de vos paiements, contactez-nous - nous sommes l&agrave; pour vous accompagner.",
+    pay_verse: "Marchez doucement. Pr&eacute;parez-vous intentionnellement.<br>Votre voyage commence bien avant votre arriv&eacute;e.",
+    pay_cta: "&#128172; Organiser Mon Plan de Paiement",
+    price_eye: "Investissement", price_title: "S&eacute;curisez Votre Place",
+    price_tag: "Prix Par Personne", price_per: "par personne &middot; tout compris",
+    price_alert: "Seulement 9 Places Disponibles", price_fine: "S&eacute;curisez votre place avec un acompte via WhatsApp",
+    price_btn: "&#128172; R&eacute;server Maintenant via WhatsApp",
+    terms_eye: "Avant de R&eacute;server", terms_title: "Termes &amp; Conditions",
+    t1_title: "Nourriture &amp; Boissons", t1_text: "Deux repas fournis quotidiennement pour tous les participants inscrits. Le d&eacute;jeuner et les collations suppl&eacute;mentaires sont &agrave; votre charge. Les restrictions alimentaires doivent &ecirc;tre communiqu&eacute;es &agrave; l&rsquo;avance.",
+    t2_title: "Conditions M&eacute;dicales", t2_text: "Veuillez d&eacute;clarer toute condition m&eacute;dicale, allergie ou exigence di&eacute;t&eacute;tique avant le d&eacute;part. Ces informations resteront confidentielles.",
+    t3_title: "S&eacute;curit&eacute; Personnelle", t3_text: "Des mesures de s&eacute;curit&eacute; seront en place tout au long du tour. Les participants sont responsables de leurs effets personnels.",
+    t4_title: "Politique d&rsquo;Annulation", t4_text: "Tous les paiements sont non remboursables. Cependant, votre r&eacute;servation peut &ecirc;tre transf&eacute;r&eacute;e &agrave; une autre personne si vous ne pouvez pas assister.",
+    contact_eye: "Nous Contacter", contact_title: "Connectez-Vous Avec Nous",
+    contact_wa_lbl: "WhatsApp", contact_social_lbl: "R&eacute;seaux Sociaux",
+    footer_text: "&copy; 2026 Barefoot Afrikan Spiritual Tours &bull; B.A.S.T. Ghana Tour &bull; Tous Droits R&eacute;serv&eacute;s",
+    modal_who: "Qui Nous Sommes", modal_mission_lbl: "Mission",
+    modal_mission: "Offrir des exp&eacute;riences spirituelles uniques et immersives qui cr&eacute;ent un voyage &agrave; travers les cultures d&rsquo;Afrique pour tous.",
+    modal_vision_lbl: "Vision",
+    modal_vision: "Reconnecter les gens &agrave; leur culture et identit&eacute; africaines, cr&eacute;ant stabilit&eacute; &eacute;conomique et justice pour les Africains.",
+    modal_values_lbl: "Nos Valeurs", modal_goals_lbl: "Nos Objectifs",
+    modal_btn: "&#128172; R&eacute;server Ma Place",
+    contact_reserve: "&#128172; R&eacute;server Ma Place via WhatsApp",
+    mandatory: "OBLIGATOIRE",
+    book_wa: "&#128172; R&eacute;server une Place via WhatsApp",
+    drawer_about: "&Agrave; Propos BAST", drawer_contact: "Contact",
+    drawer_book: "&#128172; R&eacute;server Ma Place"
+  },
+
+  pl: {
+    lang_label: "J&#281;zyk",
+    nav_about: "O nas", nav_contact: "Kontakt", nav_book: "&#128172; Rezerwuj",
+    hero_badge: "Barefoot Afrikan Spiritual Tours",
+    hero_title: "POWR&Oacute;T DO<br><em>KORZENI</em>",
+    hero_sub: "7 Dni &bull; 5 Region&oacute;w &bull; Jedna Transformuj&#261;ca Podr&oacute;&#380;",
+    stat_dates: "Daty", stat_price: "Cena", stat_dest: "Cel podr&oacute;&#380;y",
+    stat_dates_val: "28 Lis &ndash; 5 Gru 2026", stat_price_val: "$1 697 / osoba", stat_dest_val: "Ghana, Afryka Zachodnia",
+    form_name: "Pe&#322;ne Imi&#281; i Nazwisko *", form_email: "E-mail *", form_phone: "Telefon / WhatsApp",
+    form_guests: "Liczba Go&#347;ci", form_payment: "Opcja P&#322;atno&#347;ci",
+    form_message: "Wiadomo&#347;&#263;", form_msg_placeholder: "Pytania, potrzeby dietetyczne, warunki medyczne...",
+    form_submit: "&#9993;&#65039; ZAREZERWUJ SWOJE MIEJSCE",
+    form_success_title: "Dzi&#281;kujemy! &#10022;",
+    form_success_text: "Skontaktujemy si&#281; z Tob&#261; przez WhatsApp lub e-mail w ci&#261;gu 24 godzin.",
+    spots: "Tylko 9 Miejsc Dost&#281;pnych",
+    pay_full: "Pe&#322;na P&#322;atno&#347;&#263; - $1 697", pay_plan: "Plan P&#322;atno&#347;ci - Od Maja 2026", pay_deposit: "Zaliczka na Rezerwacj&#281;",
+    about_eye: "O Podr&oacute;&#380;y", about_title: "&#346;wi&#281;ty Powr&oacute;t do Domu",
+    about_p1: "To wi&#281;cej ni&#380; wycieczka - to pielgrzymka. Przemierzaj pi&#281;&#263; r&oacute;&#380;nych region&oacute;w Ghany, od t&#281;tni&#261;cego &#380;yciem wybrze&#380;a Akkry po kr&oacute;lewskie serce Kr&oacute;lestwa Aszanti, zanurzony w kulturze, naturze i przodk&oacute;w uzdrawianiu.",
+    about_p2: "Pod okiem do&#347;wiadczonych miejscowych ekspert&oacute;w ka&#380;dy dzie&#324; rozgrywa si&#281; jak ceremonia - honoruj&#261;c ziemi&#281;, ludzi i ducha kontynentu afrykanskiego.",
+    stat_days: "Dni Zanurzenia", stat_regions: "Region&oacute;w Ghany", stat_spots: "Pozosta&#322;ych Miejsc", stat_price2: "Na Osob&#281; Wszystko W Cenie",
+    regions_eye: "Dok&#261;d Jedziemy", regions_title: "Pi&#281;&#263; &#346;wi&#281;tych Region&oacute;w",
+    gallery_eye: "Z Poprzednich Podr&oacute;&#380;y", gallery_title: "Do&#347;wiadcz Magii",
+    itin_eye: "Dzie&#324; po Dniu", itin_title: "Twoja 8-Dniowa Podr&oacute;&#380;", itin_note: "Dotknij dowolnego dnia, aby zobaczy&#263; szczeg&oacute;&#322;y.",
+    expand_show: "Poka&#380; Dni 4 - 8", expand_hide: "Poka&#380; Mniej",
+    d1_title: "Przyjazd &amp; Powitanie", d1_desc: "Odbi&oacute;r z lotniska. Zakwaterowanie, poznanie wsp&oacute;&#322;podr&oacute;&#380;nik&oacute;w i kolacja powitalna. Podr&oacute;&#380; rozpoczyna si&#281; orientacj&#261; na &#347;wi&#281;tej ziemi Ghany.",
+    d2_title: "Go-Kart, Pla&#380;a &amp; Relaks", d2_desc: "Go-Karty i impreza na start do&#347;wiadczenia. Relaks na pi&#281;knej pla&#380;y Bojo i ci&#261;gn&#261;ca energia nabrze&#380;na Ghany.",
+    d3_title: "Historia &amp; Dziedzictwo - Akkra", d3_desc: "Zwiedzanie Centrum Sztuki w Akkrze, Ogrod&oacute;w Je Gber i historycznych miejsc stolicy. G&#322;&#281;bokie zanurzenie w sztuce, muzyce i korzeniach przodk&oacute;w.",
+    d4_title: "Rzeka Volta &amp; &#379;ycie w Kurorcie", d4_desc: "Podr&oacute;&#380; do Regionu Volta i zameldowanie w Agbenoir Resorts. Zapieraj&#261;ce dech widoki i przej&#347;cie przez ikoniczny Most Adome.",
+    d5_title: "Przygoda na Volcie", d5_desc: "Kajak na rzece Volta, jazda rowerem przez wioski, zapieraj&#261;ce dech wodospady i spacer po k&#322;adce nad pod&#322;og&#261; lasu.",
+    d6_title: "Dziki P&oacute;&#322;noc - Park Narodowy Mole", d6_desc: "Podr&oacute;&#380; do g&#322;&oacute;wnego rezerwatu przyrody Ghany. Safari ze s&#322;oniami, antylopami i r&oacute;&#380;norodn&#261; dzik&#261; zwierzyn&#261; na otwartej sawannie.",
+    d7_title: "&#346;wi&#281;ta Natura - Region Bono", d7_desc: "Wizyta w Sanktuarium Ma&#322;p Fiema i &#347;wi&#281;tej rzece Tano. Warsztat Duchowego Oczyszczenia &amp; Leczenia Zio&#322;ami.",
+    d8_title: "Kr&oacute;lewskie Aszanti - Wielki Fina&#322;", d8_desc: "Kr&oacute;lewskie po&#380;egnanie przez Kr&oacute;lestwo Aszanti. Zwiedzanie Pa&#322;acu Manhyia, legendarnego Miecza Okomfo Anokye i centrum kulturalnego Kumasi.",
+    inc_eye: "Co Jest W&#322;&#261;czone", inc_title: "Wszystko Czego Potrzebujesz", inc_sub: "Twoja inwestycja obejmuje wszystkie elementy podr&oacute;&#380;y.",
+    inc1: "Odbi&oacute;r z lotniska przy przyje&#378;dzie", inc2: "Dwa posi&#322;ki dziennie - &#347;niadanie &amp; kolacja w wybranych lokalnych miejscach",
+    inc3: "Nocleg ka&#380;dej nocy w trakcie 7-dniowej podr&oacute;&#380;y", inc4: "Warsztat Duchowego Oczyszczenia &amp; Leczenia Zio&#322;ami",
+    inc5: "Do&#347;wiadczenie safari w Parku Narodowym Mole", inc6: "Sanktuarium Ma&#322;p Fiema &amp; wizyta przy &#347;wi&#281;tej rzece Tano",
+    inc7: "Rejs i do&#347;wiadczenie kajakowe na Volcie", inc8: "Wodospady, Pla&#380;a &amp; przygody na k&#322;adce le&#347;nej",
+    inc9: "Pe&#322;na trasa po Kr&oacute;lestwie Aszanti - Pa&#322;ac Manhyia &amp; Okomfo Anokye", inc10: "Wszelki transport naziemny we wszystkich 5 regionach",
+    inc11: "Bilety na Go-Karty w 2. dniu w cenie", inc12: "Eksperci-przewodnicy i interpretacja kulturowa",
+    notinc_eye: "Prosz&#281; Zwr&oacute;ci&#263; Uwag&#281;", notinc_title: "Co Nie Jest W&#322;&#261;czone",
+    ni1_title: "Mi&#281;dzynarodowe Loty", ni1_text: "Loty do i z Ghany nie s&#261; w&#322;&#261;czone w cen&#281; pakietu.",
+    ni2_title: "Wiza do Ghany", ni2_text: "Podr&oacute;&#380;ni s&#261; odpowiedzialni za uzyskanie w&#322;asnej wizy wjazdowej do Ghany.",
+    ni3_title: "Ubezpieczenie Podro&#380;ne", ni3_text: "Ubezpieczenie podr&oacute;&#380;ne jest wymagane dla wszystkich uczestnik&oacute;w. Prosz&#281; za&#322;atwi&#263; przed wyjazdem.",
+    ni4_title: "Op&oacute;&#378;nienia &amp; Przed&#322;u&#380;enia", ni4_text: "Wszelkie dodatkowe koszty wynikaj&#261;ce z op&oacute;&#378;nie&#324; lub przed&#322;u&#380;e&#324; podr&oacute;&#380;y s&#261; odpowiedzialno&#347;ci&#261; podr&oacute;&#380;nika.",
+    pay_eye: "Elastyczne P&#322;atno&#347;ci", pay_title: "Plan P&#322;atno&#347;ci &#346;wi&#281;tej Podr&oacute;&#380;y",
+    pay_p1: "W Barefoot Afrikan Spiritual Tours wierzymy, &#380;e Twoja podr&oacute;&#380; powinna wydawa&#263; si&#281; zbile&#380;ona, celowa i dost&#281;pna. Oferujemy elastyczny plan p&#322;atno&#347;ci.",
+    pay_stat1_lbl: "Data Wycieczki", pay_stat1_val: "28 Listopada",
+    pay_stat2_lbl: "Ca&#322;kowita Inwestycja", pay_stat2_val: "$1 697",
+    pay_stat3_lbl: "Pocz&#261;tek Planu", pay_stat3_val: "Maj 2026",
+    pay_stat4_lbl: "Termin P&#322;atno&#347;ci", pay_stat4_val: "31 Pa&#378;dziernika",
+    pay_q1: "Mo&#380;esz wybra&#263; miesi&#281;czne lub dwutygodniowe sk&#322;adki, umo&#380;liwiaj&#261;c sobie przygotowanie do podr&oacute;&#380;y z &#322;atwo&#347;ci&#261;. Wszystkie p&#322;atno&#347;ci musz&#261; zosta&#263; zako&#324;czone przed terminem.",
+    pay_q2: "Zach&#281;camy do regularnych wp&#322;at i witamy wcze&#347;niejsze p&#322;atno&#347;ci jako cz&#281;&#347;&#263; Twojego przygotowania.",
+    pay_q3: "W celu uzyskania wskaz&oacute;wek dotycz&#261;cych p&#322;atno&#347;ci, skontaktuj si&#281; z nami - jeste&#347;my tu, by i&#347;&#263; t&#261; drog&#261; razem z Tob&#261;.",
+    pay_verse: "Id&#378; delikatnie. Przygotuj si&#281; celowo.<br>Twoja podr&oacute;&#380; zaczyna si&#281; na d&#322;ugo przed przybyciem.",
+    pay_cta: "&#128172; Zorganizuj Plan P&#322;atno&#347;ci",
+    price_eye: "Inwestycja", price_title: "Zabezpiecz Swoje Miejsce",
+    price_tag: "Cena Na Osob&#281;", price_per: "na osob&#281; &middot; wszystko w cenie",
+    price_alert: "Tylko 9 Miejsc Dost&#281;pnych", price_fine: "Zabezpiecz swoje miejsce depozytem przez WhatsApp",
+    price_btn: "&#128172; Zarejestruj Si&#281; przez WhatsApp",
+    terms_eye: "Przed Rezerwacj&#261;", terms_title: "Regulamin",
+    t1_title: "Wy&#380;ywienie", t1_text: "Dwa posi&#322;ki dziennie dla wszystkich zarejestrowanych uczestnik&oacute;w. Lunch i dodatkowe przek&#261;ski na w&#322;asny koszt. Ograniczenia dietetyczne nale&#380;y zg&#322;osi&#263; z wyprzedzeniem.",
+    t2_title: "Warunki Medyczne", t2_text: "Prosz&#281; zg&#322;osi&#263; wszelkie schorzenia, alergie lub wymagania dietetyczne przed wyjazdem. Informacje b&#281;d&#261; poufne.",
+    t3_title: "Bezpiecze&#324;stwo Osobiste", t3_text: "&#346;rodki bezpiecze&#324;stwa b&#281;d&#261; obowi&#261;zywa&#263; przez ca&#322;y czas trwania wycieczki. Uczestnicy s&#261; odpowiedzialni za swoje dobra osobiste.",
+    t4_title: "Polityka Anulowania", t4_text: "Wszystkie p&#322;atno&#347;ci s&#261; bezzwrotne. Jednak&#380;e rezerwacj&#281; mo&#380;na przenie&#347;&#263; na inn&#261; osob&#281;, je&#347;li nie mo&#380;esz uczestniczy&#263;.",
+    contact_eye: "Skontaktuj Si&#281;", contact_title: "Po&#322;&#261;cz Si&#281; Z Nami",
+    contact_wa_lbl: "WhatsApp", contact_social_lbl: "Media Spo&#322;eczno&#347;ciowe",
+    footer_text: "&copy; 2026 Barefoot Afrikan Spiritual Tours &bull; B.A.S.T. Ghana Tour &bull; Wszelkie Prawa Zastrze&#380;one",
+    modal_who: "Kim Jeste&#347;my", modal_mission_lbl: "Misja",
+    modal_mission: "Oferowanie unikalnych, immersyjnych do&#347;wiadcze&#324; duchowych tworz&#261;cych podr&oacute;&#380; przez kultury Afryki dla wszystkich.",
+    modal_vision_lbl: "Wizja",
+    modal_vision: "Ponowne po&#322;&#261;czenie ludzi z ich afryka&#324;sk&#261; kultur&#261; i to&#380;samo&#347;ci&#261;, tworzenie stabilno&#347;ci ekonomicznej i sprawiedliwo&#347;ci dla Afrykan&oacute;w.",
+    modal_values_lbl: "Nasze Warto&#347;ci", modal_goals_lbl: "Nasze Cele",
+    modal_btn: "&#128172; Zarezerwuj Moje Miejsce",
+    contact_reserve: "&#128172; Zarezerwuj Moje Miejsce przez WhatsApp",
+    mandatory: "OBOWI&#260;ZKOWE",
+    book_wa: "&#128172; Zarezerwuj Miejsce przez WhatsApp",
+    drawer_about: "O BAST", drawer_contact: "Kontakt",
+    drawer_book: "&#128172; Zarezerwuj Moje Miejsce"
+  }
+};
+
+/* ──────────────────────────────
+   LANGUAGE DETECTION & APPLY
+────────────────────────────── */
+function detectLang() {
+  var saved = localStorage.getItem('bast_lang');
+  if (saved && T[saved]) return saved;
+  var nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+  if (nav.startsWith('de')) return 'de';
+  if (nav.startsWith('es')) return 'es';
+  if (nav.startsWith('pt')) return 'pt';
+  if (nav.startsWith('fr')) return 'fr';
+  if (nav.startsWith('pl')) return 'pl';
+  return 'en';
+}
+
+function setLang(code) {
+  if (!T[code]) return;
+  localStorage.setItem('bast_lang', code);
+  var t = T[code];
+  var $ = function(id) { return document.getElementById(id); };
+  var $$ = function(sel) { return document.querySelectorAll(sel); };
+  var set = function(id, val) { var el = $(id); if (el) el.innerHTML = val; };
+  var setAll = function(sel, val) { $$(sel).forEach(function(el) { el.innerHTML = val; }); };
+
+  // <html lang>
+  document.documentElement.lang = code;
+
+  // Nav
+  set('navAboutBtn', t.nav_about);
+  set('navContactLink', t.nav_contact);
+  set('navBookLink', t.nav_book);
+  set('drawerAboutBtn', t.drawer_about);
+  set('drawerContactLink', t.drawer_contact);
+  set('drawerBookLink', t.drawer_book);
+
+  // Hero
+  set('heroBadge', t.hero_badge);
+  set('heroTitle', t.hero_title);
+  set('heroSub', t.hero_sub);
+  set('statDatesLbl', t.stat_dates); set('statDatesVal', t.stat_dates_val);
+  set('statPriceLbl', t.stat_price); set('statPriceVal', t.stat_price_val);
+  set('statDestLbl', t.stat_dest);   set('statDestVal', t.stat_dest_val);
+  set('formNameLbl', t.form_name);
+  set('formEmailLbl', t.form_email);
+  set('formPhoneLbl', t.form_phone);
+  set('formGuestsLbl', t.form_guests);
+  set('formPaymentLbl', t.form_payment);
+  set('formMsgLbl', t.form_message);
+  set('formSubmitBtn', t.form_submit);
+  set('formSuccessTitle', t.form_success_title);
+  set('formSuccessText', t.form_success_text);
+  set('heroSpots', t.spots);
+  var ph = document.getElementById('f-message');
+  if (ph) ph.placeholder = t.form_msg_placeholder;
+  var fPay = document.getElementById('f-payment');
+  if (fPay) {
+    fPay.options[0].text = t.pay_full;
+    fPay.options[1].text = t.pay_plan;
+    fPay.options[2].text = t.pay_deposit;
+  }
+
+  // About section
+  set('aboutEye', t.about_eye); set('aboutTitle', t.about_title);
+  set('aboutP1', t.about_p1); set('aboutP2', t.about_p2);
+  set('statDays', t.stat_days); set('statRegions', t.stat_regions);
+  set('statSpots2', t.stat_spots); set('statPrice2', t.stat_price2);
+
+  // Regions
+  set('regionsEye', t.regions_eye); set('regionsTitle', t.regions_title);
+
+  // Gallery
+  set('galleryEye', t.gallery_eye); set('galleryTitle', t.gallery_title);
+
+  // Itinerary
+  set('itinEye', t.itin_eye); set('itinTitle', t.itin_title);
+  set('itinNote', t.itin_note);
+  set('expandLabel', t.expand_show);
+  set('d1Title', t.d1_title); set('d1Desc', t.d1_desc);
+  set('d2Title', t.d2_title); set('d2Desc', t.d2_desc);
+  set('d3Title', t.d3_title); set('d3Desc', t.d3_desc);
+  set('d4Title', t.d4_title); set('d4Desc', t.d4_desc);
+  set('d5Title', t.d5_title); set('d5Desc', t.d5_desc);
+  set('d6Title', t.d6_title); set('d6Desc', t.d6_desc);
+  set('d7Title', t.d7_title); set('d7Desc', t.d7_desc);
+  set('d8Title', t.d8_title); set('d8Desc', t.d8_desc);
+
+  // Includes
+  set('incEye', t.inc_eye); set('incTitle', t.inc_title); set('incSub', t.inc_sub);
+  set('inc1',t.inc1); set('inc2',t.inc2); set('inc3',t.inc3); set('inc4',t.inc4);
+  set('inc5',t.inc5); set('inc6',t.inc6); set('inc7',t.inc7); set('inc8',t.inc8);
+  set('inc9',t.inc9); set('inc10',t.inc10); set('inc11',t.inc11); set('inc12',t.inc12);
+
+  // Not included
+  set('notIncEye', t.notinc_eye); set('notIncTitle', t.notinc_title);
+  set('ni1Title', t.ni1_title); set('ni1Text', t.ni1_text);
+  set('ni2Title', t.ni2_title); set('ni2Text', t.ni2_text);
+  set('ni3Title', t.ni3_title); set('ni3Text', t.ni3_text);
+  set('ni4Title', t.ni4_title); set('ni4Text', t.ni4_text);
+  var mandEl = document.getElementById('mandatoryBadge');
+  if (mandEl) mandEl.textContent = t.mandatory;
+
+  // Payment plan
+  set('payEye', t.pay_eye); set('payTitle', t.pay_title); set('payP1', t.pay_p1);
+  set('payStat1Lbl', t.pay_stat1_lbl); set('payStat1Val', t.pay_stat1_val);
+  set('payStat2Lbl', t.pay_stat2_lbl); set('payStat2Val', t.pay_stat2_val);
+  set('payStat3Lbl', t.pay_stat3_lbl); set('payStat3Val', t.pay_stat3_val);
+  set('payStat4Lbl', t.pay_stat4_lbl); set('payStat4Val', t.pay_stat4_val);
+  set('payQ1', t.pay_q1); set('payQ2', t.pay_q2); set('payQ3', t.pay_q3);
+  set('payVerse', t.pay_verse); set('payCtaBtn', t.pay_cta);
+
+  // Price
+  set('priceEye', t.price_eye); set('priceTitle', t.price_title);
+  set('priceTag', t.price_tag); set('pricePer', t.price_per);
+  set('priceAlert', t.price_alert); set('priceFine', t.price_fine);
+  set('priceBtn', t.price_btn);
+
+  // Terms
+  set('termsEye', t.terms_eye); set('termsTitle', t.terms_title);
+  set('t1Title', t.t1_title); set('t1Text', t.t1_text);
+  set('t2Title', t.t2_title); set('t2Text', t.t2_text);
+  set('t3Title', t.t3_title); set('t3Text', t.t3_text);
+  set('t4Title', t.t4_title); set('t4Text', t.t4_text);
+
+  // Contact
+  set('contactEye', t.contact_eye); set('contactTitle', t.contact_title);
+  set('contactWaLbl', t.contact_wa_lbl); set('contactSocialLbl', t.contact_social_lbl);
+  set('contactReserveBtn', t.contact_reserve);
+
+  // Footer
+  set('footerText', t.footer_text);
+
+  // Modal
+  set('modalWho', t.modal_who);
+  set('modalMissionLbl', t.modal_mission_lbl); set('modalMission', t.modal_mission);
+  set('modalVisionLbl', t.modal_vision_lbl);   set('modalVision', t.modal_vision);
+  set('modalValuesLbl', t.modal_values_lbl);   set('modalGoalsLbl', t.modal_goals_lbl);
+  set('modalBtn', t.modal_btn);
+
+  // Book buttons
+  setAll('.book-wa-btn', t.book_wa);
+
+  // Language picker active state
+  document.querySelectorAll('.lang-btn').forEach(function(btn) { btn.classList.toggle('active', btn.dataset.lang === code); });
+}
+
+/* ──────────────────────────────
+   LANGUAGE PICKER INIT
+────────────────────────────── */
+window.addEventListener('DOMContentLoaded', function() {
+  var picker = document.getElementById('langPicker');
+  var langs = [
+    {code:'en', label:'EN', name:'English'},
+    {code:'de', label:'DE', name:'Deutsch'},
+    {code:'es', label:'ES', name:'Español'},
+    {code:'pt', label:'PT', name:'Português'},
+    {code:'fr', label:'FR', name:'Français'},
+    {code:'pl', label:'PL', name:'Polski'}
+  ];
+  langs.forEach(function(l) {
+    // Main nav picker
+    var btn = document.createElement('button');
+    btn.className = 'lang-btn';
+    btn.dataset.lang = l.code;
+    btn.title = l.name;
+    btn.textContent = l.label;
+    btn.addEventListener('click', function() { setLang(l.code); });
+    picker.appendChild(btn);
+    // Drawer picker
+    var drawerPicker = document.getElementById('drawerLangPicker');
+    if (drawerPicker) {
+      var btn2 = btn.cloneNode(true);
+      btn2.addEventListener('click', function() { setLang(l.code); });
+      drawerPicker.appendChild(btn2);
+    }
+  });
+  setLang(detectLang());
+});
+
+})();
+
 </script>
 </body>
 </html>
